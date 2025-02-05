@@ -47,12 +47,12 @@ class Dungeon:
         self.random.setstate(g.getstate())
 
     def generate_dungeon(self, num_rooms: int) -> None:
-        self.add_room_at(0, 0, Room())
+        self.add_room_at(0, 0, Room.Room(self))
         self.max_width = int(num_rooms / 1.5)
         self.max_height = int(num_rooms / 1.5)
 
         for i in range(num_rooms):
-            room = Room()
+            room = Room.Room(self)
             x, y = 0, 0
             x, y = self.select_random_room()
 
@@ -225,6 +225,3 @@ class Dungeon:
             print()
 
 
-dungeon = Dungeon()
-dungeon.generate_dungeon(10)
-dungeon.print_dungeon()

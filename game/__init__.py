@@ -1,4 +1,7 @@
-from .Room import Room
-from .Dungeon import Dungeon
+import game.Room
+import game.Room
+import game.Dungeon
+import game.Game
+import game.Inventory
 
-__all__ = ['Game','Room', 'Dungeon']
+__all__ = ['Game','Room', 'Dungeon', 'Inventory']
