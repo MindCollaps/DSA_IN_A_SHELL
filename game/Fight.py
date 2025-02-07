@@ -1,4 +1,6 @@
-from . import Player
+from asyncio import wait_for
+
+from game import Player
 from npc import Enemy
 from utils import Console
 
@@ -13,10 +15,8 @@ class Fight:
         self.runned = False
 
     def start(self):
-        while self.player.hp > 0 and self.enemy.hp > 0:
+        while self.player.hp > 0 and self.enemy.hp > 0 and not self.runned:
             self.new_round()
-            if self.player.hp <= 0 or self.enemy.hp <= 0:
-                break
 
     def new_round(self):
         self.console.clear()
@@ -25,9 +25,9 @@ class Fight:
             self.fight_dialogue()
         else:
             dmg = self.enemy.attack(self.player)
-            txt = f"""{self.enemy.name} attacks you!
-                    {self.enemy.name} makes {dmg} damage"""
-            self.console.println(txt)
+            self.console.println(f"{self.enemy.name}'s Turn\n")
+            self.console.println(f"{self.enemy.name} attacks you!")
+            self.console.println(f"{self.enemy.name} makes {dmg} damage")
             self.console.wait()
             self.player.hp -= dmg
 
@@ -44,11 +44,11 @@ class Fight:
     def fight_dialogue(self):
         enemy_looking = self.get_enemy_status(self.enemy.hp, self.enemy.max_hp)
 
-        txt = f"""Round {self.round}
-        {self.player.name} has {self.player.hp} HP left
-        {self.enemy.name} is looking {enemy_looking}"""
+        self.console.println(f"Round {self.round}\n")
+        self.console.println(f"{self.player.name} has {self.player.hp} HP left")
+        self.console.println(f"{self.enemy.name} is looking {enemy_looking} \n")
+        self.console.println(f"You have your {self.player.weapon.name} equipt\n")
 
-        self.console.println(txt)
         self.fight_menu()
 
     def run(self):
@@ -63,10 +63,9 @@ class Fight:
     def fight_menu(self):
         options = ["Attack", "Use Item", "Run"]
         choice = self.console.menu(options)
-
         if choice == 0:
             dmg = self.player.weapon.attack(self.player, self.enemy)
-            print(f"{self.player.name} attacks {self.enemy.name} for {dmg} damage.")
+            self.console.println(f"{self.player.name} attacks {self.enemy.name} for {dmg} damage.")
             self.enemy.hp -= dmg
             self.console.wait()
         elif choice == 1:

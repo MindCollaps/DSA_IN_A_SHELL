@@ -1,7 +1,3 @@
-from game import Dungeon
-from npc import Enemy
-from item import Item
-
 from enum import Enum
 
 class RoomType(Enum):
@@ -11,7 +7,11 @@ class RoomType(Enum):
     BOSS = 3
 
 class Room:
-    def __init__(self, dungeon: Dungeon):
+    def __init__(self, dungeon):
+        from game import Dungeon
+        from npc import Enemy
+        from item import Item
+
         self.description: str = ""
         self.items: list[Item] = []
         self.monsters: list[Enemy] = []

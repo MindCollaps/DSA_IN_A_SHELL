@@ -9,13 +9,15 @@ class MenuOption:
         self.background = background
         self.color_pair_num = -1
 
-        curses.start_color()
 
 class Console:
     def __init__(self):
         self.screen = curses.initscr()
         self.line = 0
         self.last_x = 0
+        self.silent_shell = False
+
+        curses.start_color()
 
     def clear(self):
         self.line = 0
@@ -27,19 +29,20 @@ class Console:
             self.line += 1
             return
 
-        self.screen.addstr(self.line, 0, txt)
-        newline_count = txt.count('\n')
-        self.line += 1 + newline_count
+        for line in txt.split("\n"):
+            self.screen.addstr(self.line, 0, line)
+            self.line += 1
 
     def wait(self):
+        self.activate_silent()
         self.screen.getch()
 
     def print_menu(self, menu_options: [MenuOption], selected_index: int):
         for index, option in enumerate(menu_options):
             if index == selected_index:
-                self.screen.addstr(index + 1 + self.line, 0, "-> " + option.text, curses.A_REVERSE | curses.color_pair(option.color_pair_num))
+                self.screen.addstr(index + self.line, 0, "-> " + option.text, curses.A_REVERSE | curses.color_pair(option.color_pair_num))
             else:
-                self.screen.addstr(index + 1 + self.line, 0, "   " + option.text, curses.A_NORMAL | curses.color_pair(option.color_pair_num))
+                self.screen.addstr(index + self.line, 0, "   " + option.text, curses.A_NORMAL | curses.color_pair(option.color_pair_num))
 
     def make_colors(self, unique_colors: List, all_options: List):
         for i, color in enumerate(unique_colors):
@@ -53,15 +56,31 @@ class Console:
                         color.color_pair_num = unique.color_pair_num
                         break
 
-    def menu(self, menu_options: List[Union[MenuOption, str]]) -> int | None:
-        self.cool_menu(menu_options)
+    def menu(self, menu_options: List[Union[MenuOption, str]]) -> int:
+        return self.cool_menu(menu_options)
 
-    def cool_menu(self, menu_options: List[Union[MenuOption, str]]):
+    def activate_silent(self):
+        if self.silent_shell:
+            return
+
         curses.noecho()
         curses.cbreak()
         self.screen.keypad(True)
         curses.curs_set(0)
+        self.silent_shell = True
 
+    def deactivate_silent(self):
+        if not self.silent_shell:
+            return
+
+        curses.echo()
+        curses.nocbreak()
+        self.screen.keypad(False)
+        curses.curs_set(1)
+        self.silent_shell = False
+
+    def cool_menu(self, menu_options: List[Union[MenuOption, str]]) -> int:
+        self.activate_silent()
         unique_colors = []
         for i, option in enumerate(menu_options):
             if isinstance(option, str):
@@ -82,7 +101,6 @@ class Console:
         try:
             while True:
                 self.print_menu(menu_options, selected_index)
-                self.screen.refresh()
 
                 key = self.screen.getch()
 
@@ -91,11 +109,8 @@ class Console:
                 elif key == curses.KEY_DOWN and selected_index < len(menu_options) - 1:
                     selected_index += 1
                 elif key in [curses.KEY_ENTER, ord('\n')]:
-                    break
+                    return selected_index
         finally:
-            curses.nocbreak()
-            self.screen.keypad(False)
-            curses.echo()
-            curses.endwin()
-            curses.curs_set(1)
+            self.line += len(menu_options) + 1
+            self.deactivate_silent()
             return selected_index

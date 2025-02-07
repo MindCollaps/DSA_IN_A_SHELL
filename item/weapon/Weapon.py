@@ -5,8 +5,8 @@ from item import Item
 
 
 class Weapon(Item):
-    def __init__(self, name, price, rarity, damage, critical_chance, critical_damage, durability):
-        super().__init__(name, price, rarity)
+    def __init__(self, name, description, price, rarity, damage, critical_chance, critical_damage, durability):
+        super().__init__(name, description, price, rarity)
         self.damage: int = damage
         self.critical_chance: float = critical_chance
         self.critical_damage: int = critical_damage
