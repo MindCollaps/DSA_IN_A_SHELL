@@ -1,6 +1,8 @@
-from game import Dungeon
+from game import Fight, Player
+from npc.monster import Bat
+from utils import Console
 
 if __name__ == "__main__":
-    dungeon = Dungeon.Dungeon()
-    dungeon.generate_dungeon(10)
-    dungeon.print_dungeon()
+    console = Console()
+    fight = Fight(console, Player(), Bat())
+    fight.start()
