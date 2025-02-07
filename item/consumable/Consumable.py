@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from game import Player
 
 
 class Consumable:

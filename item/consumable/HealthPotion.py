@@ -7,6 +7,5 @@ class HealthPotion(Item, Consumable):
         super().__init__(name, price, rarity)
         self.heal_amount = heal_amount
 
-    def consume(self, player) -> None:
-        if player.hp + self.heal_amount > player.max_hp:
-            player.hp = player.max_hp
+    def consume(self, player) -> int:
+        return self.heal_amount

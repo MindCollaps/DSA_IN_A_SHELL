@@ -10,7 +10,7 @@ class Weapon(Item):
         self.damage: int = damage
         self.critical_chance: float = critical_chance
         self.critical_damage: int = critical_damage
-        self.durability: float = durability
+        self.durability: int = durability
 
     @abstractmethod
     def attack(self, player, attacks) -> int:
@@ -19,6 +19,7 @@ class Weapon(Item):
     def default_attack(self) -> int:
         if random.random() < self.critical_chance:
             return self.damage * self.critical_damage
+        return self.damage
 
     def default_wear(self):
         rand = random.random()
