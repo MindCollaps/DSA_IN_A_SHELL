@@ -1,6 +1,7 @@
-from .Item import Item, Rarity
-from .weapon.Weapon import Weapon
-from .consumable.Consumable import Consumable
-from .consumable.HealthPotion import HealthPotion
+from item.Item import Item
+from item.Rarity import Rarity
+from item.consumable.Consumable import Consumable
+from item.consumable.HealthPotion import HealthPotion
+from item.weapon.Weapon import Weapon
 
-__all__ = ['Item', 'Weapon', 'Consumable', 'HealthPotion', 'Rarity']
+__all__ = ['Rarity', 'Weapon', 'Consumable', 'HealthPotion', 'Item']

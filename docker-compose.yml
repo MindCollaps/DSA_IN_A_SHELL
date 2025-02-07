@@ -1,0 +1,11 @@
+services:
+  game:
+    build:
+        context: .
+        dockerfile: .config/Dockerfile
+    container_name: dsa-game
+    volumes:
+      - ".:/app:rw"
+    command: /bin/bash
+    tty: true
+    stdin_open: true

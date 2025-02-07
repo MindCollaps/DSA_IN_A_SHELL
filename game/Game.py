@@ -1,5 +1,3 @@
-from rich import print
-
 from game import Player
 
 class Game:

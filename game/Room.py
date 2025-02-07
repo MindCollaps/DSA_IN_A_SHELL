@@ -1,8 +1,9 @@
-from game import Dungeon
-from npc import Enemy
-from item import Item
-
 from enum import Enum
+
+from game import Dungeon
+from item import Item
+from npc import Enemy
+
 
 class Room_Type(Enum):
     EMPTY = 0

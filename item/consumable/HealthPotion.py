@@ -1,6 +1,5 @@
-from game import Player
-from item import Item
 from item import Consumable
+from item import Item
 
 
 class HealthPotion(Item, Consumable):
@@ -8,6 +7,6 @@ class HealthPotion(Item, Consumable):
         super().__init__(name, price, rarity)
         self.heal_amount = heal_amount
 
-    def consume(self, player: Player) -> None:
+    def consume(self, player) -> None:
         if player.hp + self.heal_amount > player.max_hp:
             player.hp = player.max_hp

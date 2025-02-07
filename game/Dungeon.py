@@ -1,7 +1,8 @@
-from typing import List, Dict, Tuple, Optional
-from rich import print
-from game import Room
 import random
+from typing import List, Tuple, Optional
+
+from game import Room
+from game import Player
 
 room_visuals_top = {
     0: "╔═════╗",
@@ -47,12 +48,12 @@ class Dungeon:
         self.random.setstate(g.getstate())
 
     def generate_dungeon(self, num_rooms: int) -> None:
-        self.add_room_at(0, 0, Room.Room(self))
+        self.add_room_at(0, 0, Room(self))
         self.max_width = int(num_rooms / 1.5)
         self.max_height = int(num_rooms / 1.5)
 
         for i in range(num_rooms):
-            room = Room.Room(self)
+            room = Room(self)
             x, y = 0, 0
             x, y = self.select_random_room()
 
@@ -223,5 +224,3 @@ class Dungeon:
                     else:
                         print(room_visuals_bottom[0], end="")
             print()
-
-

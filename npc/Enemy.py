@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
-from game import Player
 from npc import NPC
+
 
 class Enemy(NPC):
     def __init__(self, name: str, hp: int, max_hp: int):
@@ -10,5 +10,5 @@ class Enemy(NPC):
         self.max_hp: int = max_hp
 
     @abstractmethod
-    def attack(self, player: Player) -> int:
+    def attack(self, player) -> int:
         pass

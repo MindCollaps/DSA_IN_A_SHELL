@@ -1,9 +1,8 @@
-from abc import abstractmethod
-from item import Item
-from npc import Enemy
-from game import Player
-
 import random
+from abc import abstractmethod
+
+from item import Item
+
 
 class Weapon(Item):
     def __init__(self, name, price, rarity, damage, critical_chance, critical_damage, durability):
@@ -14,7 +13,7 @@ class Weapon(Item):
         self.durability: float = durability
 
     @abstractmethod
-    def attack(self, player: Player, attacks: Enemy) -> int:
+    def attack(self, player, attacks) -> int:
         pass
 
     def default_attack(self) -> int:
@@ -28,5 +27,5 @@ class Weapon(Item):
         elif rand < 0.6:
             self.durability -= 1
 
-    def equip(self, player: Player):
+    def equip(self, player):
         player.weapon = self
