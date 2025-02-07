@@ -8,7 +8,7 @@ from item import Item
 
 class Jason(Enemy, DroppingNpc):
     def __init__(self):
-        super().__init__("Jason, just Jason", [], 35, 35)
+        super().__init__("Jason", [], 35, 35)
 
 
     def attack(self, player: Player) -> int:

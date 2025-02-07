@@ -1,11 +1,9 @@
-from game import Player
-from item import Item
-from item import Consumable
+from item import Item, Rarity, Consumable, EffectType
 
 class Fruit(Item, Consumable):
     def __init__(self):
-        super().__init__("Fruit", "A weird looking fruit.", 1)
+        super().__init__("Fruit", "The fruit pulsed with a slow, internal rhythm, its skin a mottled tapestry of bruised purples and sickly greens.", 3, Rarity.COMMON)
+        self.heal_amount = 5
 
-    def use(self, player: Player):
-        player.heal(10)
-        print("You ate the weird fruit and restored 10 health")
+    def consume(self, player) -> [(int|str, EffectType)]:
+        return [(self.heal_amount, EffectType.HEAL), ("It tasted so weird also good, you're confused now", EffectType.TEXT)]

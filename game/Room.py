@@ -4,7 +4,7 @@ from item import Item
 
 from enum import Enum
 
-class Room_Type(Enum):
+class RoomType(Enum):
     EMPTY = 0
     MONSTER = 1
     ITEM = 2
@@ -17,7 +17,7 @@ class Room:
         self.monsters: list[Enemy] = []
         self.walls: list[tuple[int, int]] = []
         self.dungeon: Dungeon = dungeon
-        self.Room_Type: Room_Type = Room_Type.EMPTY
+        self.Room_Type: RoomType = RoomType.EMPTY
         self.generate_room()
 
     def generate_room(self):

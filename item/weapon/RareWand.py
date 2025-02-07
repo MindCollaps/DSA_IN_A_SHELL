@@ -8,7 +8,7 @@ import random
 
 class RareWand(Weapon):
     def __init__(self):
-        super().__init__("A fancy looking wand, but without magic", 12, Rarity.RARE, 12, 0.1, 2, 75)
+        super().__init__("Non-magical wand", 12, Rarity.RARE, 12, 0.1, 2, 75)
 
     def attack(self, player: Player, attacks: Enemy) -> int:
         self.default_wear()
