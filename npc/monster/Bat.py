@@ -3,6 +3,7 @@ import random
 from npc import DroppingNpc
 from npc import Enemy
 
+
 class Bat(Enemy, DroppingNpc):
     def __init__(self):
         super().__init__("Bat", 10, 10)

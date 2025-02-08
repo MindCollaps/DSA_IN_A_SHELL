@@ -1,4 +1,4 @@
-from item import Consumable, Item, EffectType, Rarity
+from item import Consumable, Item, EffectType
 
 
 class StrengthPotion(Item, Consumable):

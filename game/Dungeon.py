@@ -2,7 +2,6 @@ import random
 from typing import List, Tuple, Optional
 
 from game import Room
-from game import Player
 
 room_visuals_top = {
     0: "╔═════╗",
@@ -23,6 +22,7 @@ room_visuals_bottom = {
 
 empty = "       "
 
+
 class Dungeon:
     def __init__(self):
         self.rooms: List[List[Optional[Room]]] = [[]]
@@ -40,7 +40,6 @@ class Dungeon:
             return True
         else:
             return False
-
 
     def set_noise_seed(self, seed: int) -> None:
         g = random.Random()

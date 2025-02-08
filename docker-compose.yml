@@ -1,8 +1,8 @@
 services:
   game:
     build:
-        context: .
-        dockerfile: .config/Dockerfile
+      context: .
+      dockerfile: .config/Dockerfile
     container_name: dsa-game
     volumes:
       - ".:/app:rw"

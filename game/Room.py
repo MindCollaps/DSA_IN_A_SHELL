@@ -1,10 +1,12 @@
 from enum import Enum
 
+
 class RoomType(Enum):
     EMPTY = 0
     MONSTER = 1
     ITEM = 2
     BOSS = 3
+
 
 class Room:
     def __init__(self, dungeon):

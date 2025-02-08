@@ -1,3 +1,3 @@
-from utils.ConsolePrinter import Console, MenuOption
+from utils.ConsolePrinter import Printer, MenuOption
 
-__all__ = ['Console', 'MenuOption']
+__all__ = ['Printer', 'MenuOption']

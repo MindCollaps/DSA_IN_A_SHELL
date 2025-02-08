@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from enum import Enum
-from game import Player
+
 
 class EffectType(Enum):
     HEAL = 0
@@ -12,5 +12,5 @@ class EffectType(Enum):
 
 class Consumable:
     @abstractmethod
-    def consume(self, player) -> [(int|str, EffectType)]:
+    def consume(self, player) -> [(int | str, EffectType)]:
         pass

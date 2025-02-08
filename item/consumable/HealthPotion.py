@@ -1,4 +1,5 @@
-from item import Consumable, Item, EffectType, Rarity
+from item import Consumable, Item, EffectType
+
 
 class HealthPotion(Item, Consumable):
     def __init__(self, name, description, price, rarity, heal_amount):

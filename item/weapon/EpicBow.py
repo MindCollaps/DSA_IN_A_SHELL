@@ -1,9 +1,7 @@
 from game import Player
-from item import Weapon
 from item import Rarity
+from item import Weapon
 from npc import Enemy
-
-import random
 
 
 class EpicBow(Weapon):

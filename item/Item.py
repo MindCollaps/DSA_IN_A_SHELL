@@ -1,5 +1,6 @@
 from item import Rarity
 
+
 class Item:
     def __init__(self, name: str, description: str, price: int, rarity: Rarity):
         self.name: str = name
