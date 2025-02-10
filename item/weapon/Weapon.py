@@ -12,13 +12,13 @@ class Weapon(Item):
         self.kampftechnik: Kampftechnik = kampftechnik
         self.tp = tp
 
-    def get_at(self, player, attacks) -> int:
+    def attack_value(self, player, attacks) -> int:
         mut = player.leit_eigenschaft.mut
         mut_modifier = max(0, (mut - 8) // 3)
         at = get_kampftechnik_wert(player, self.kampftechnik) + mut_modifier
         return at
 
-    def get_pa(self, player, attacks) -> int:
+    def parade_value(self, player, attacks) -> int:
         kampftechnik_wert = get_kampftechnik_wert(player, self.kampftechnik)
         base_pa = kampftechnik_wert // 2
         leiteigenschaft = self.kampftechnik.leiteigenschaft
@@ -30,4 +30,4 @@ class Weapon(Item):
         return self.tp.roll()
 
     def equip(self, player):
-        player.weapon = self
+        player.weapon_equipped = self

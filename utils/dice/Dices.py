@@ -79,7 +79,7 @@ class Dices:
         return result_str, total_sum
 
 
-    def dice_text(self):
+    def dice_text(self) -> str:
         dice_counter = Counter()
         modifier = 0
 
