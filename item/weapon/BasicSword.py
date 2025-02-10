@@ -1,12 +1,9 @@
+from game.Kampftechnik import Kampftechnik
 from item import Rarity
-from item import Weapon
+from item.weapon.Weapon import Weapon
+from utils.dice.Dices import Dice
 
 
 class BasicSword(Weapon):
     def __init__(self):
-        super().__init__("Basic Sword", "Well its a basic sword, what did you think?", 10, Rarity.COMMON, 10, 0.1, 2,
-                         100)
-
-    def attack(self, player, attacks) -> int:
-        self.default_wear()
-        return self.default_attack()
+        super().__init__("Basic Sword", "Well its a basic sword, what did you think?", 10, Rarity.COMMON, Kampftechnik.Schwerter,  Dice(6)+2)

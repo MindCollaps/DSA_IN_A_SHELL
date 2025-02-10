@@ -5,5 +5,6 @@ from game.Inventory import Inventory
 from game.Player import Player
 from game.Room import Room
 from game.Room import RoomType
+from game.LeitEigenschaft import LeitEigenschaft
 
-__all__ = ['Game', 'Room', 'Dungeon', 'Inventory', 'Player', 'Fight', 'RoomType']
+__all__ = ['Game', 'Room', 'Dungeon', 'Inventory', 'Player', 'Fight', 'RoomType', 'LeitEigenschaft']

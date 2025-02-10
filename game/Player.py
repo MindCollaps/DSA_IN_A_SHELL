@@ -1,13 +1,5 @@
-class Player:
-    def __init__(self, weapon):
-        from game import Inventory
-        from item import Weapon
+from game.Character import Character
 
-        self.name = "Player"
-        self.level: int = 1
-        self.xp: int = 0
-        self.hp: int = 100
-        self.max_hp: int = 100
-        self.inventory: Inventory = Inventory()
-        self.gold: int = 30
-        self.weapon: Weapon = weapon
+class Player(Character):
+    def __init__(self, name: str):
+        super().__init__(name)

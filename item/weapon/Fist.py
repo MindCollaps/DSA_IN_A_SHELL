@@ -1,13 +1,9 @@
-from game import Player
+from game.Kampftechnik import Kampftechnik
 from item import Rarity
-from item import Weapon
-from npc import Enemy
+from item.weapon.Weapon import Weapon
+from utils.dice.Dices import Dice
 
 
 class Fist(Weapon):
     def __init__(self):
-        super().__init__("Fist", 0, Rarity.COMMON, 2, 0.0, 0, 100)
-
-    def attack(self, player: Player, attacks: Enemy) -> int:
-        self.default_wear()
-        return self.default_attack()
+        super().__init__("Fist", "Well its your fist", 0, Rarity.COMMON, Kampftechnik.RAUFEN, Dice(6))

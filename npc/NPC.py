@@ -1,3 +1,7 @@
-class NPC:
+from game.Character import Character
+
+
+class NPC(Character):
     def __init__(self, name: str):
-        self.name = name
+        super().__init__(name)
+        
