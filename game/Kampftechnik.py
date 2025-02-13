@@ -2,11 +2,14 @@ from enum import Enum
 
 from game.LeitEigenschaft import LeitEigenschaft
 
+
 def get_kampftechnik_wert(player, kampftechnik) -> int:
-    return player[kampftechnik.value-1][1]
+    return player.kampftechnik[kampftechnik.id - 1][1]
+
 
 def set_kampftechnik_wert(player, kampftechnik, value: int):
-    player.kampftechnik[kampftechnik.value-1] = (kampftechnik, value)
+    player.kampftechnik[kampftechnik.id - 1] = (kampftechnik, value)
+
 
 class Kampftechnik(Enum):
     Armbrueste = (0, LeitEigenschaft.FF)

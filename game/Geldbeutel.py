@@ -1,10 +1,12 @@
-from enum import  Enum
+from enum import Enum
+
 
 class GeldType(Enum):
     KREUZER = 0
     HELLER = 1
     SILBERTALER = 2
     DUKATEN = 3
+
 
 class Geldbeutel:
     def __init__(self):

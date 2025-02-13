@@ -1,6 +1,7 @@
-from collections import Counter
 import copy
 import random
+from collections import Counter
+
 
 class Dice:
     def __init__(self, value: int):
@@ -16,21 +17,21 @@ class Dice:
 
     def __rmul__(self, other):
         if isinstance(other, int):
-            dices =  []
+            dices = []
             if other == 1:
                 return Dices([self])
 
-            for i in range(0,other):
+            for i in range(0, other):
                 dices.append(copy.copy(self))
             return Dices(dices)
 
         TypeError("Can only multiply with other dices")
 
-
     def roll(self) -> int:
         if self.value == 1:
             return 1
         return random.randint(1, self.value)
+
 
 class Dices:
     def __init__(self, dices: list[Dice]):
@@ -42,8 +43,7 @@ class Dices:
         elif isinstance(other, Dices):
             self.dices += other.dices
         elif isinstance(other, int):
-            self.__add__(other*Dice(1))
-
+            self.__add__(other * Dice(1))
 
         return self
 
@@ -78,7 +78,6 @@ class Dices:
 
         return result_str, total_sum
 
-
     def dice_text(self) -> str:
         dice_counter = Counter()
         modifier = 0
@@ -101,5 +100,3 @@ class Dices:
             parts.append(f"{modifier}")
 
         return " + ".join(parts)
-
-

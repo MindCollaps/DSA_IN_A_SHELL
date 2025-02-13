@@ -10,5 +10,5 @@ class Mask(Item, Consumable):
     def consume(self, player) -> [(int | str, EffectType)]:
         return [(self.strength_amount, EffectType.STRENGTH),
                 (
-                "You're feeling the strength of a berserker, ready to eat some flesh. You start cracking your knuckles",
-                EffectType.TEXT)]
+                    "You're feeling the strength of a berserker, ready to eat some flesh. You start cracking your knuckles",
+                    EffectType.TEXT)]

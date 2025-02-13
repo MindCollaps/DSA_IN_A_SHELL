@@ -23,16 +23,38 @@ def options_from_str_list(str_list: list[str]) -> list[MenuOption]:
 
 class Printer:
     def __init__(self):
+        self.layout: Layout = None
         self.console = Console()
+        self.layout_mode = False
+        self.console.show_cursor(False)
+        self.txt = ""
 
     def println(self, txt: str):
-        self.console.print(txt)
+        if self.layout_mode:
+            self.console.clear()
+            self.txt += "\n" + txt if len(txt) > 0 else txt
+            self.layout["txt"].update(Text(self.txt))
+            self.console.print(self.layout)
+        else:
+            self.console.print(txt)
 
-    def wait(self):
+    def wait(self, wait_message: bool = False, wait_txt: str = "Press enter to continue"):
+        if wait_message:
+            self.console.clear()
+            layout = Layout()
+            layout.split_column(Layout(name="txt", renderable=Text(self.txt)),
+                                Layout(name="wait_txt", size=1, renderable=Text(wait_txt)))
+            self.console.print(layout)
         self.console.input()
 
     def clear(self):
         self.console.clear()
+        self.txt = ""
+
+    def use_layout(self, layout: Layout = Layout()):
+        self.layout = layout
+        self.layout.split_column(Layout(name="txt"), Layout(name="menu"))
+        self.layout_mode = True
 
     def menu_panel(self, options: list[MenuOption], selected_index, selected):
         menu_items = [
@@ -58,6 +80,20 @@ class Printer:
             return menu_layout
         return menu_panel
 
+    def menu_layout(self, max_size):
+        return Layout(name="menu", size=max_size + 2)
+
+    def destroy_menu(self):
+        if self.layout_mode:
+            tmp_txt = self.txt
+            self.clear()
+            self.txt = tmp_txt
+            self.layout["txt"].update(Text(self.txt))
+            self.layout["menu"].update(Text())
+            self.console.print(self.layout)
+        else:
+            self.clear()
+
     def menu(self, options: list[MenuOption], layout: Layout | None = None) -> (int, int):
         selected_index = 0
         sub_selected = -1
@@ -69,11 +105,19 @@ class Printer:
             if the_len > max_size:
                 max_size = the_len
 
-        if layout is None:
-            layout = Layout()
+        if layout is None and not self.layout_mode:
+            layout = Layout(self.menu_layout(max_size))
+        elif self.layout_mode:
+            layout = self.layout
+
+        if layout["menu"] is None:
             layout.split_column(
-                Layout(name="menu", size=max_size + 2),
+                self.menu_layout(max_size)
             )
+
+        menu_content = self.display_menu(options, selected_index, sub_selected)
+        layout["menu"].update(menu_content)
+        layout["menu"].size = max_size + 2
 
         with Live(layout, console=self.console, auto_refresh=True) as live:
             while True:
@@ -95,8 +139,10 @@ class Printer:
                 elif key == readchar.key.LEFT:
                     sub_selected = -1
                 elif key in (readchar.key.ENTER, '\r', '\n'):
+                    self.destroy_menu()
                     return selected_index, sub_selected
                 elif key in (readchar.key.CTRL_C, readchar.key.ESC):
+                    self.destroy_menu()
                     return -1, -1
 
                 menu_content = self.display_menu(options, selected_index, sub_selected)
