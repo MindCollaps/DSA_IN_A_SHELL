@@ -10,16 +10,14 @@ from rich.text import Text
 
 class MenuOption:
     def __init__(self, text: str, color: rich.style.Color = rich.style.Color.from_rgb(255, 255, 255),
-                 background: rich.style.Color = rich.style.Color.from_rgb(0, 0, 0), sub_menu=None):
+                 background: rich.style.Color = rich.style.Color.from_rgb(0, 0, 0), sub_menu: list=None):
         self.sub_menu = sub_menu if sub_menu is not None else []
         self.text = text
         self.color = color
         self.background = background
 
-
 def options_from_str_list(str_list: list[str]) -> list[MenuOption]:
     return [MenuOption(v) for v in str_list]
-
 
 class Printer:
     def __init__(self):
@@ -56,7 +54,7 @@ class Printer:
         self.layout.split_column(Layout(name="txt"), Layout(name="menu"))
         self.layout_mode = True
 
-    def menu_panel(self, options: list[MenuOption], selected_index, selected):
+    def menu_panel(self, options: list[MenuOption], selected_index, selected, title: str | None, border_style):
         menu_items = [
             Text(f"{'> ' if i == selected_index and selected else '  '}{option.text}",
                  style=Style(color="red", bold=True) if i == selected_index
@@ -64,14 +62,14 @@ class Printer:
             for i, option in enumerate(options)
         ]
 
-        menu_panel = Panel("\n".join(str(item) for item in menu_items))
+        menu_panel = Panel("\n".join(str(item) for item in menu_items), title=title, border_style=border_style)
         return menu_panel
 
-    def display_menu(self, options: list[MenuOption], selected_index, sub_selected) -> ConsoleRenderable:
+    def display_menu(self, options: list[MenuOption], selected_index, sub_selected, title: str | None, border_style) -> ConsoleRenderable:
         has_sub = len(options[selected_index].sub_menu) > 0
-        menu_panel = self.menu_panel(options, selected_index, sub_selected == - 1)
+        menu_panel = self.menu_panel(options, selected_index, sub_selected == - 1, title, border_style)
         if has_sub:
-            sub_menu_panel = self.menu_panel(options[selected_index].sub_menu, sub_selected, sub_selected != -1)
+            sub_menu_panel = self.menu_panel(options[selected_index].sub_menu, sub_selected, sub_selected != -1, "", "")
             menu_layout = Layout()
             menu_layout.split_row(
                 Layout(menu_panel),
@@ -94,7 +92,7 @@ class Printer:
         else:
             self.clear()
 
-    def menu(self, options: list[MenuOption], layout: Layout | None = None) -> (int, int):
+    def menu(self, options: list[MenuOption], layout: Layout | None = None, title: str | None = None, border_style: str | Style = "") -> (int, int):
         selected_index = 0
         sub_selected = -1
 
@@ -106,16 +104,14 @@ class Printer:
                 max_size = the_len
 
         if layout is None and not self.layout_mode:
-            layout = Layout(self.menu_layout(max_size))
-        elif self.layout_mode:
-            layout = self.layout
-
-        if layout["menu"] is None:
+            layout = Layout()
             layout.split_column(
                 self.menu_layout(max_size)
             )
+        elif self.layout_mode:
+            layout = self.layout
 
-        menu_content = self.display_menu(options, selected_index, sub_selected)
+        menu_content = self.display_menu(options, selected_index, sub_selected, title, border_style)
         layout["menu"].update(menu_content)
         layout["menu"].size = max_size + 2
 
@@ -145,6 +141,6 @@ class Printer:
                     self.destroy_menu()
                     return -1, -1
 
-                menu_content = self.display_menu(options, selected_index, sub_selected)
+                menu_content = self.display_menu(options, selected_index, sub_selected, title, border_style)
                 layout["menu"].update(menu_content)
                 live.refresh()

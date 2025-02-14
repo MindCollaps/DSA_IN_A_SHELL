@@ -10,3 +10,6 @@ class Player(Character):
         self.inventory = Inventory()
         self.weapon_equipped = Fist()
         self.geldbeutel: Geldbeutel = Geldbeutel()
+
+    def equip_weapon(self, weapon):
+        self.weapon_equipped = weapon

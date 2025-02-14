@@ -50,32 +50,46 @@ class Fight:
         else:
             return "near death"
 
-    def fight_dialogue(self):
+    def fight_round_message(self):
         enemy_looking = self.get_enemy_status(self.enemy.current_hp, self.enemy.base_hp)
-
         self.printer.println(f"Round {self.round}\n")
         self.printer.println(f"{self.player.name} has {self.player.current_hp} HP left")
         self.printer.println(f"{self.enemy.name} is looking {enemy_looking} \n")
         self.printer.println(f"You have your {self.player.weapon_equipped.name} equipt\n")
 
+    def fight_dialogue(self):
+        self.fight_round_message()
         self.fight_menu()
 
     def run(self):
         self.printer.println(f"{self.player.name} tries to run away.")
         if self.player.base_hp < self.enemy.base_hp:
             self.printer.println(f"{self.player.name} is too weak to run away.")
+            self.printer.wait(wait_message=True)
             self.fight_menu()
         else:
             self.printer.println(f"{self.player.name} successfully runs away.")
+            self.printer.wait(wait_message=True)
             self.runned = True
 
+    def inventory_dialogue(self):
+        action, close = self.player.inventory.inventory_dialog(self.printer, self.player, fight=True)
+        if action:
+            return
+        elif close:
+            self.printer.clear()
+            self.fight_round_message()
+            self.fight_menu()
+        else:
+            self.inventory_dialogue()
+
     def fight_menu(self):
-        options = ["Attack", "Use Item", "Try to run"]
+        options = ["Attack", "Inventory", "Try to run"]
         choice, _ = self.printer.menu(options_from_str_list(options))
         if choice == 0:
             self.attack_player()
         elif choice == 1:
-            self.player.inventory.inventory_dialog_fight()
+            self.inventory_dialogue()
         elif choice == 2:
             self.run()
 
@@ -84,7 +98,7 @@ class Fight:
         at = self.enemy.weapon.attack_value(self.enemy, self.player)
 
         if attack_roll <= at:
-            self.printer.println(f"\n{self.enemy.name} hits you!\n")
+            self.printer.println(f"{self.enemy.name} hits you!\n")
             self.parade_player()
         else:
             self.printer.println("\nThe enemy misses you!")
@@ -113,6 +127,10 @@ class Fight:
         else:
             self.printer.println(f"You fail to {dodge_txt} the attack")
             _, dmg = self.enemy.weapon.damage_roll()
+
+            if self.player.ruestung is not None:
+                dmg -= self.player.ruestung.ruestungsschutz
+
             self.printer.println(f"{self.enemy.name} deals {dmg} damage to you!")
             self.player.current_hp -= dmg
 
@@ -144,6 +162,9 @@ class Fight:
                 roll, dmg = self.player.weapon_equipped.damage_roll()
                 self.printer.println(f"\n{roll}")
                 self.printer.println(f"\nYou deal {dmg} damage to {self.enemy.name}!")
+                if self.enemy.ruestung is not None:
+                    dmg -= self.enemy.ruestung.ruestungsschutz
+
                 self.enemy.current_hp -= dmg
         else:
             self.printer.println("You miss your enemy!")

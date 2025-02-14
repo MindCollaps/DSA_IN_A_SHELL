@@ -3,6 +3,7 @@ from enum import Enum, auto
 from game.Geldbeutel import Geldbeutel
 from game.Kampftechnik import Kampftechnik
 from game.LeitEigenschaft import LeitEigenschaft, get_leiteigenschaft
+from item.armor.Armor import Armor
 
 
 class Spezies(Enum):
@@ -10,6 +11,7 @@ class Spezies(Enum):
     Elf = (auto(), 2, -6, 8)
     HalbElf = (auto(), 5, -6, 8)
     Zwerg = (auto(), 8, -4, 6)
+
 
     def __init__(self, id, hp_gw: int, zk_gw: int, gs_gw: int):
         self.id = id
@@ -24,6 +26,7 @@ class Character:
         self.spezies: Spezies = Spezies.Mensch
         self.kampftechnik = [(kt, 8) for kt in Kampftechnik]
         self.leit_eigenschaft = [(le, 8) for le in LeitEigenschaft]
+        self.ruestung: Armor | None = None
 
         self.base_hp: int = self.spezies.hp_gw + get_leiteigenschaft(self, LeitEigenschaft.KO) + get_leiteigenschaft(
             self, LeitEigenschaft.KO)
