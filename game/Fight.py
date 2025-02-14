@@ -19,7 +19,14 @@ class Fight:
         while self.player.current_hp > 0 and self.enemy.current_hp > 0 and not self.runned:
             self.new_round()
 
-        # TODO: Print who won
+        self.printer.clear()
+
+        if self.player.current_hp <= 0:
+            self.printer.println("You died!")
+        elif self.enemy.current_hp <= 0:
+            self.printer.println(f"You defeated {self.enemy.name}!")
+
+        self.printer.wait(wait_message=True)
         # TODO: Add some color maybe?
 
     def new_round(self):
