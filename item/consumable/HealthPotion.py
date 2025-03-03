@@ -1,4 +1,4 @@
-from item import Consumable, Item, EffectType
+from item import Item, Consumable, EffectType
 
 
 class HealthPotion(Item, Consumable):
@@ -6,8 +6,7 @@ class HealthPotion(Item, Consumable):
         super().__init__(name, description, price, rarity)
         self.heal_amount = heal_amount
 
-    def consume(self, player) -> int:
-        return self.heal_amount
 
-    def getType(self) -> EffectType:
-        return EffectType.HEAL
+    def consume(self, player) -> [(int | str, EffectType)]:
+        return [(self.heal_amount, EffectType.HEAL), ("Restored vitality flows through your veins, refreshing your strength and reviving your spirit",
+                EffectType.TEXT)]
