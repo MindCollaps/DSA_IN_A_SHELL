@@ -1,13 +1,11 @@
-from game import Player
+from game.Kampftechnik import Kampftechnik
 from item import Rarity
-from item import Weapon
-from npc import Enemy
+from item.weapon.Weapon import Weapon
+from utils.dice.Dices import Dice
+
 
 
 class RareSword(Weapon):
     def __init__(self):
-        super().__init__("Kusanagi Sword", 17, Rarity.RARE, 14, 0.2, 2, 75)
-
-    def attack(self, player: Player, attacks: Enemy) -> int:
-        self.default_wear()
-        return self.default_attack()
+        super().__init__("Rare Sword", "The Kusanagi Sword is a legendary Japanese blade with mythical powers to control the wind.",
+                        10, Rarity.COMMON, Kampftechnik.Schwerter, Dice(6) + 3)

@@ -1,8 +1,6 @@
-from game import Player
 from game.Kampftechnik import Kampftechnik
 from item import Rarity
-from item import Weapon
-from npc import Enemy
+from item.weapon.Weapon import Weapon
 from utils.dice.Dices import Dice
 
 

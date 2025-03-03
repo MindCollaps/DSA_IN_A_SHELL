@@ -1,13 +1,11 @@
-from game import Player
+from game.Kampftechnik import Kampftechnik
 from item import Rarity
-from item import Weapon
-from npc import Enemy
+from item.weapon.Weapon import Weapon
+from utils.dice.Dices import Dice
+
 
 
 class BasicBow(Weapon):
     def __init__(self):
-        super().__init__("Basic Bow", 11, Rarity.COMMON, 9, 0.2, 3, 90)
-
-    def attack(self, player: Player, attacks: Enemy) -> int:
-        self.default_wear()
-        return self.default_attack()
+        super().__init__("Basic Bow", "Well its a basic bow, what did you think?", 35, Rarity.COMMON,
+                         Kampftechnik.Boegen, Dice(6) + 2)

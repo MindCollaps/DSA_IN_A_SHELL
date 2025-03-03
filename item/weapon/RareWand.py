@@ -1,13 +1,10 @@
-from game import Player
+from game.Kampftechnik import Kampftechnik
 from item import Rarity
-from item import Weapon
-from npc import Enemy
+from item.weapon.Weapon import Weapon
+from utils.dice.Dices import Dice
 
 
 class RareWand(Weapon):
     def __init__(self):
-        super().__init__("Non-magical wand", 12, Rarity.RARE, 12, 0.1, 2, 75)
-
-    def attack(self, player: Player, attacks: Enemy) -> int:
-        self.default_wear()
-        return self.default_attack()
+        super().__init__("Rare Wand", "Its a non magical wand, so its just a large plank", 85, Rarity.RARE,
+                                  Kampftechnik.Stangenwaffen, Dice(6) + 2)

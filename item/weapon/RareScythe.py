@@ -1,13 +1,11 @@
-from game import Player
+from game.Kampftechnik import Kampftechnik
 from item import Rarity
-from item import Weapon
-from npc import Enemy
+from item.weapon.Weapon import Weapon
+from utils.dice.Dices import Dice
+
 
 
 class RareScythe(Weapon):
     def __init__(self):
-        super().__init__("Lunar Scythe", 15, Rarity.RARE, 13, 0.2, 3, 75)
-
-    def attack(self, player: Player, attacks: Enemy) -> int:
-        self.default_wear()
-        return self.default_attack()
+        super().__init__("Lunar Scythe", "Its a mystical crescent blade imbued with lunar powers", 10, Rarity.RARE,
+                         Kampftechnik.Zweihandschwerter, Dice(6) + 3)

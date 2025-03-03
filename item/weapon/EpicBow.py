@@ -1,13 +1,11 @@
-from game import Player
+from game.Kampftechnik import Kampftechnik
 from item import Rarity
-from item import Weapon
-from npc import Enemy
+from item.weapon.Weapon import Weapon
+from utils.dice.Dices import Dice
+
 
 
 class EpicBow(Weapon):
     def __init__(self):
-        super().__init__("Shadow String, Bow", 20, Rarity.EPIC, 18, 0.3, 3, 45)
-
-    def attack(self, player: Player, attacks: Enemy) -> int:
-        self.default_wear()
-        return self.default_attack()
+        super().__init__("Epic Bow", "Its called Shadow String", 220, Rarity.EPIC,
+                         Kampftechnik.Boegen, Dice(6) + 5)
