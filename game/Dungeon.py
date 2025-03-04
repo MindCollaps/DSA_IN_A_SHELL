@@ -1,7 +1,12 @@
 import random
 from typing import List, Tuple, Optional
-
-from game import Room
+from utils import Printer, MenuOption
+from utils.ConsolePrinter import options_from_str_list
+from game.Fight import Fight
+from game import Player
+from npc import Enemy
+from game.Room import Room
+from npc.monster import MONSTERS
 
 room_visuals_top = {
     0: "╔═════╗",
@@ -24,13 +29,80 @@ empty = "       "
 
 
 class Dungeon:
-    def __init__(self):
+    def __init__(self, player: Player):
+        self.player = player
+        self.printer = Printer()
+        self.printer.use_layout()
         self.rooms: List[List[Optional[Room]]] = [[]]
         self.starting_room: tuple[int, int] = (0, 0)
         self.current_room: tuple[int, int] = (0, 0)
         self.max_width: int = 0
         self.max_height: int = 0
         self.random: random.Random = random.Random()
+
+    def start(self):
+        self.printer.println("Welcome to Pen and Paper in your shell! \n")
+        self.printer.println("Choose how long your Adventure should last!")
+        self.dungeon_choice()
+        self.printer.println("Alright, your Adventure starts now!")
+        while self.player.current_hp > 0:
+            self.dungeon_dialogue()
+
+    def dungeon_dialogue(self):
+        self.dungeon_menu()
+        self.dungeon_room_message()
+
+    def dungeon_room_message(self):
+        room_type = random.choices(["empty", "monster", "item"], weights=[60, 20, 20])[0]
+
+        if room_type == "monster":
+            self.printer.println("You entered a Room with a monster!")
+            self.handle_monster_room()
+        elif room_type == "item":
+            self.printer.println("You entered a Room with a treasure!")
+            self.handle_item_room() 
+        else:
+            self.printer.println("The Room is clear. Which direction do you want to go next, Adventurer?")
+            self.print_dungeon()
+
+    def dungeon_menu(self):
+        options = ["North", "East", "West", "South"]
+        choice, _ = self.printer.menu(options_from_str_list(options))
+        if choice == 0:
+            self.move((0, 1))
+            self.printer.println("You head toward north.")
+        elif choice == 1:
+            self.move((-1, 0))
+            self.printer.println("You head toward east.")
+        elif choice == 2:
+            self.move((1, 0))
+            self.printer.println("You head toward west.")
+        elif choice == 3:
+            self.move((0, -1))
+            self.printer.println("You head toward south.")
+        self.printer.wait(wait_message=True)
+
+    def handle_monster_room(self):
+        room = self.get_room_at(*self.current_room)
+        if room:
+            # Wähle ein zufälliges Monster aus der Liste
+            MonsterClass = random.choice(MONSTERS)
+            Enemy = MonsterClass()  # Erstelle eine Instanz des Monsters
+                
+            fight = Fight(self.player, Enemy)
+            fight.start()
+                
+            if self.player.current_hp <= 0:
+                print("Game Over!")
+                exit()
+
+    def handle_item_room(self):
+        room = self.get_room_at(*self.current_room)
+        if room and room.items:
+            for item in room.items:
+                self.player.inventory.add_item(item)
+                self.printer.println(f"{item.name} wurde deinem Inventar hinzugefügt!")
+        self.printer.wait(wait_message=True)
 
     def move(self, direction: tuple[int, int]) -> bool:
         x, y = self.current_room
@@ -46,7 +118,20 @@ class Dungeon:
         g.seed(seed)
         self.random.setstate(g.getstate())
 
+    def dungeon_choice(self,):
+        self.printer.println("Dungeon choice method called.")  # Debug-Ausgabe
+        options = ["Small", "Middle", "Big",]
+        choice, _ = self.printer.menu(options_from_str_list(options))
+        self.printer.println(f"Player chose: {options[choice]}")  # Debug-Ausgabe
+        if choice == 0 :
+            self.generate_dungeon(10)
+        elif choice == 1 :
+            self.generate_dungeon(20)
+        elif choice == 2 :
+            self.generate_dungeon(30)
+
     def generate_dungeon(self, num_rooms: int) -> None:
+        self.printer.println(f"Generating dungeon with {num_rooms} rooms...")  # Debug-Ausgabe
         self.add_room_at(0, 0, Room(self))
         self.max_width = int(num_rooms / 1.5)
         self.max_height = int(num_rooms / 1.5)
@@ -64,6 +149,8 @@ class Dungeon:
 
         self.current_room = self.starting_room
         self.shrink_dungeon()
+        self.printer.println(f"Dungeon generated with {len(self.rooms)} rooms.")  # Debug-Ausgabe
+        self.print_dungeon()
 
     def select_random_dead_end(self) -> Tuple[int, int]:
         dead_ends = []
@@ -178,6 +265,7 @@ class Dungeon:
         return room.walls
 
     def print_dungeon(self) -> None:
+        self.printer.println("Printing dungeon...")  # Debug-Ausgabe
         for y in range(self.max_height, -1, -1):
             for x in range(self.max_width, -1, - 1):
                 room = self.get_room_at(x, y)
