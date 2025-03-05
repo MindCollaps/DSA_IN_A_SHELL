@@ -1,7 +1,9 @@
-from item import Item, Consumable, EffectType, Rarity
+from item.Item import Item
+from item.usable.Usable import Usable, EffectType
+from item.Rarity import Rarity
 
 
-class Stone(Item, Consumable):
+class Stone(Item, Usable):
     def __init__(self):
         super().__init__("Stone",
                         "Limestone is a sedimentary rock primarily composed of calcium carbonate (CaCO3) in the form of the minerals calcite and aragonite",

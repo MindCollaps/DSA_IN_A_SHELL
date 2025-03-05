@@ -1,7 +1,9 @@
-from item import Item, Consumable, EffectType, Rarity
+from item.Item import Item
+from item.usable.Usable import Usable, EffectType
+from item.Rarity import Rarity
 
 
-class Bottle(Item, Consumable):
+class Bottle(Item, Usable):
     def __init__(self):
         super().__init__("Bottle", "A bottle filled with a stinky, brown liquid.", 0, Rarity.COMMON)
         self.drunk_amount = 10

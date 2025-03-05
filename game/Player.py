@@ -2,12 +2,13 @@ from game.Character import Character
 from game.Geldbeutel import Geldbeutel
 from game.Inventory import Inventory
 from item.weapon.Fist import Fist
-from item.consumable.Consumable import EffectType
+from item.usable.Usable import EffectType
+from game.Character import Spezies
 
 
 class Player(Character):
     def __init__(self, name: str):
-        super().__init__(name)
+        super().__init__(name, Spezies.Mensch)
         self.inventory = Inventory()
         self.weapon_equipped = Fist()
         self.geldbeutel: Geldbeutel = Geldbeutel()

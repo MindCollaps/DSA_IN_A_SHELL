@@ -1,7 +1,9 @@
-from item import Item, Consumable, EffectType, Rarity
+from item.Item import Item
+from item.usable.Usable import Usable, EffectType
+from item.Rarity import Rarity
 
 
-class Stick(Item, Consumable):
+class Stick(Item, Usable):
     def __init__(self):
         super().__init__("Stick", "A simple Stick, looks like a wand", 11, Rarity.COMMON)
 

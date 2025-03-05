@@ -3,7 +3,7 @@ from rich.layout import Layout
 from rich.style import Style
 
 from item import Item
-from item.consumable.Consumable import Consumable
+from item.usable.Usable import Usable
 from item.weapon.Weapon import Weapon
 from utils import Printer, MenuOption
 
@@ -28,7 +28,7 @@ class Inventory:
             des.selected = lambda item=item: printer.println(f"Description:\n{item.description}")
             subMenu.append(des)
 
-            if isinstance(item, Consumable):
+            if isinstance(item, Usable):
                 op = MenuOption("Use")
                 op.selected = lambda item=item: player.consume(item.consume())
                 subMenu.append(op)

@@ -1,7 +1,9 @@
-from item import Item, Consumable, EffectType, Rarity
+from item.Item import Item
+from item.usable.Usable import Usable, EffectType
+from item.Rarity import Rarity
 
 
-class Beer(Item, Consumable):
+class Beer(Item, Usable):
     def __init__(self):
         super().__init__("Beer", "A huge glass with beer", 11, Rarity.COMMON)
         self.drunk_amount = 7

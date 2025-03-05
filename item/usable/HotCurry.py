@@ -1,7 +1,9 @@
-from item import Item, Rarity, Consumable, EffectType
+from item.Item import Item
+from item.usable.Usable import Usable, EffectType
+from item.Rarity import Rarity
 
 
-class HotCurry(Item, Consumable):
+class HotCurry(Item, Usable):
     def __init__(self):
         super().__init__("Hot Curry", "a good smelling and spicy curry", 9, Rarity.COMMON)
         self.strength_amount = 6

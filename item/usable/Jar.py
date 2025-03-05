@@ -1,7 +1,9 @@
-from item import Item, Consumable, EffectType, Rarity
+from item.Item import Item
+from item.usable.Usable import Usable, EffectType
+from item.Rarity import Rarity
 
 
-class Jar(Item, Consumable):
+class Jar(Item, Usable):
     def __init__(self):
         super().__init__("Jar", "Its a mystic jar full of dirt", 5, Rarity.RARE)
         self.heal_amount = 10

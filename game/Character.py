@@ -11,6 +11,7 @@ class Spezies(Enum):
     Elf = (auto(), 2, -6, 8)
     HalbElf = (auto(), 5, -6, 8)
     Zwerg = (auto(), 8, -4, 6)
+    KleinerGegner = (auto(), 3, -5, 8)
 
 
     def __init__(self, id, hp_gw: int, zk_gw: int, gs_gw: int):
@@ -21,9 +22,9 @@ class Spezies(Enum):
 
 
 class Character:
-    def __init__(self, name: str):
+    def __init__(self, name: str, spezies: Spezies):
         self.name: str = name
-        self.spezies: Spezies = Spezies.Mensch
+        self.spezies: Spezies = spezies
         self.kampftechnik = [(kt, 8) for kt in Kampftechnik]
         self.leit_eigenschaft = [(le, 8) for le in LeitEigenschaft]
         self.ruestung: Armor | None = None

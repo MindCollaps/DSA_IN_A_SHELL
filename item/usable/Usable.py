@@ -10,7 +10,7 @@ class EffectType(Enum):
     SELF_HARM = 4
 
 
-class Consumable:
+class Usable:
     @abstractmethod
     def consume(self, player) -> list[(int | str, EffectType)]:
         pass

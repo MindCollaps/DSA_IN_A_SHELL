@@ -11,7 +11,10 @@ class Dice:
         if isinstance(other, Dice):
             return Dices([self, other])
         elif isinstance(other, int):
-            return Dices([self, other * Dice(1)])
+            dices = [self]
+            for i in range(0, other):
+                dices.append(Dice(1))
+            return Dices(dices)
 
         TypeError("Can only add with other dice or int")
 

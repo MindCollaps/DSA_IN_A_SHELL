@@ -1,9 +1,9 @@
 from enum import Enum
 from npc import monster
 from item import Item
-from random import random 
+import random
 from item.Rarity import Rarity
-from game.Random import getRandomItems
+from game.Random import getRandomItems, getRandomEnemy
 
 class RoomType(Enum):
     EMPTY = 0
@@ -27,7 +27,6 @@ class Room:
         self.generate_room()
 
     def generate_room(self):
-        self.monsters.append("")
         room_type_probabilities = {
         RoomType.EMPTY: 0.4,
         RoomType.ITEM: 0.2,
@@ -39,16 +38,15 @@ class Room:
                 weights=list(room_type_probabilities.values()))[0]
 
         if self.Room_Type == RoomType.EMPTY:
-                    self.description = "Ein leerer Raum. Hier gibt es nichts Besonderes."
-                    self.monsters.append("")  # Leerer String für Räume ohne Monster
+            self.description = "Ein leerer Raum. Hier gibt es nichts Besonderes."
 
         elif self.Room_Type == RoomType.MONSTER:
-                    monster = self.select_monster_by_rarity()
-                    self.monsters.append(monster)
-                    self.description = f"Ein düsterer Raum. {monster.name} lauert in der Ecke!"
+            monster = getRandomEnemy()
+            self.monsters.append(monster)
+            self.description = f"Ein düsterer Raum. {monster.name} lauert in der Ecke!"
 
         elif self.Room_Type == RoomType.ITEM:
-                    item = getRandomItems(Rarity.COMMON, 0)
-                    self.items.append(item)
-                    self.description = f"Ein Raum mit einem Schatz! Du findest {item.name}."
-                    self.monsters.append("")
+            item = getRandomItems(Rarity.COMMON, 0)
+            for i in item:
+                self.items.append(i)
+            self.description = "Ein Raum mit einer Schatztruhe. Vielleicht ist etwas Nützliches darin."

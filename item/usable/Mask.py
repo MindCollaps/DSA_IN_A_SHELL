@@ -1,7 +1,8 @@
-from item import Item, Consumable, EffectType, Rarity
+from item.Item import Item
+from item.usable.Usable import Usable, EffectType
+from item.Rarity import Rarity
 
-
-class Mask(Item, Consumable):
+class Mask(Item, Usable):
     def __init__(self):
         super().__init__("Kanekis Mask", "The Mask is black, it covers the right eye and lower half of the face", 20,
                         Rarity.RARE)
