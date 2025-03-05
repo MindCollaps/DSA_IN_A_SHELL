@@ -6,5 +6,7 @@ from item.consumable.HealthPotion import HealthPotion
 from item.weapon.BasicSword import BasicSword
 from item.weapon.Fist import Fist
 from item.weapon.Weapon import Weapon
+from item.consumable.Stone import Stone
+from item.consumable.Stick import Stick
 
-__all__ = ['Rarity', 'Weapon', 'Consumable', 'HealthPotion', 'Item', 'EffectType', 'Fist', 'BasicSword']
+__all__ = ['Rarity', 'Stick', 'Weapon', 'Stone', 'Consumable', 'HealthPotion', 'Item', 'EffectType', 'Fist', 'BasicSword']

@@ -8,6 +8,6 @@ class Fruit(Item, Consumable):
             3, Rarity.COMMON)
         self.heal_amount = 5
 
-    def consume(self, player) -> [(int | str, EffectType)]:
+    def consume(self, player) -> list[(int | str, EffectType)]:
         return [(self.heal_amount, EffectType.HEAL),
                 ("It tasted so weird also good, you're confused now", EffectType.TEXT)]

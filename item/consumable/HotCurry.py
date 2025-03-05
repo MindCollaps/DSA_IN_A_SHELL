@@ -7,7 +7,7 @@ class HotCurry(Item, Consumable):
         self.strength_amount = 6
         self.self_harm_amount = 2
 
-    def consume(self, player) -> [(int | str, EffectType)]:
+    def consume(self, player) -> list[(int | str, EffectType)]:
         return [(self.strength_amount, EffectType.STRENGTH),
                 ("You have tears in your eyes because of the spice...", EffectType.TEXT),
                 (self.self_harm_amount, EffectType.SELF_HARM)]

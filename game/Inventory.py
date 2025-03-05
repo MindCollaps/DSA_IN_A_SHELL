@@ -29,7 +29,7 @@ class Inventory:
             subMenu.append(des)
 
             if isinstance(item, Consumable):
-                op = MenuOption("Consume")
+                op = MenuOption("Use")
                 op.selected = lambda item=item: player.consume(item.consume())
                 subMenu.append(op)
 

@@ -7,6 +7,6 @@ class Bottle(Item, Consumable):
         self.drunk_amount = 10
         self.self_harm_amount = 5
 
-    def consume(self, player) -> [(int | str, EffectType)]:
+    def consume(self, player) -> list[(int | str, EffectType)]:
         return [(self.drunk_amount, EffectType.DRUNK), ("Excuse yourself, what the-? WHY?", EffectType.TEXT),
                 self.self_harm_amount, EffectType.SELF_HARM]

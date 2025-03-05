@@ -12,5 +12,5 @@ class EffectType(Enum):
 
 class Consumable:
     @abstractmethod
-    def consume(self, player) -> [(int | str, EffectType)]:
+    def consume(self, player) -> list[(int | str, EffectType)]:
         pass
