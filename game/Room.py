@@ -20,7 +20,7 @@ class Room:
 
         self.description: str = ""
         self.items: list[Item] = []
-        self.monsters: list[Enemy] = []
+        self.monster: Enemy = {}
         self.walls: list[tuple[int, int]] = []
         self.dungeon: Dungeon = dungeon
         self.Room_Type: RoomType = RoomType.EMPTY
@@ -41,9 +41,8 @@ class Room:
             self.description = "Ein leerer Raum. Hier gibt es nichts Besonderes."
 
         elif self.Room_Type == RoomType.MONSTER:
-            monster = getRandomEnemy()
-            self.monsters.append(monster)
-            self.description = f"Ein düsterer Raum. {monster.name} lauert in der Ecke!"
+            self.monster = getRandomEnemy()
+            self.description = f"Ein düsterer Raum. {self.monster.name} lauert in der Ecke!"
 
         elif self.Room_Type == RoomType.ITEM:
             item = getRandomItems(Rarity.COMMON, 0)
