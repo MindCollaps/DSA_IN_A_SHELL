@@ -8,7 +8,7 @@ from npc import Enemy
 
 class FreddyBear(Enemy, DroppingNpc):
     def __init__(self):
-        super().__init__("Freddy the Animatronic", [], 35, 35)
+        super().__init__("Freddy Baer", [], 35, 35)
 
     def attack(self, player: Player) -> int:
         return random.randint(6, 8)
