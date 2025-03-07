@@ -2,7 +2,7 @@ import random
 from typing import List, Tuple, Optional
 from xml.etree.ElementTree import tostring
 
-from utils import Printer, MenuOption
+from utils.ConsolePrinter import Printer, MenuOption
 from utils.ConsolePrinter import options_from_str_list
 from game.Fight import Fight
 from game import Player
@@ -66,36 +66,49 @@ class Dungeon:
         if currentRoom is None:
             self.printer.println("You entered a Room that does not exist!")
         elif currentRoom.Room_Type == RoomType.MONSTER:
-            self.printer.println("You entered a Room with a monster!")
+            currentRoom.description
             self.handle_monster_room()
         elif currentRoom.Room_Type == RoomType.ITEM:
-            self.printer.println("You entered a Room with a treasure!")
+            currentRoom.description
             self.handle_item_room()
         elif currentRoom.Room_Type == RoomType.EMPTY:
-            self.printer.println("The Room is clear. Which direction do you want to go next, Adventurer?")
+            currentRoom.description
 
     def dungeon_menu(self):
-        options = ["North", "East", "West", "South"]
+        x, y = self.current_room
+        possible_directions = self.get_possible_room_placement_positions(x, y)
+        options = []
+        if (0, 1) in possible_directions:
+            options.append("North")
+        if (0, -1) in possible_directions:
+            options.append("South")
+        if (1, 0) in possible_directions:
+            options.append("East")
+        if (-1, 0) in possible_directions:
+            options.append("West")
+
+        if not options:
+            self.printer.println("No available directions to move!")
+            return
+
         choice, _ = self.printer.menu(options_from_str_list(options))
-        if choice == 0:
-            self.move((0, 1))
-            self.printer.println("You head toward north.")
-        elif choice == 1:
-            self.move((-1, 0))
-            self.printer.println("You head toward east.")
-        elif choice == 2:
-            self.move((1, 0))
-            self.printer.println("You head toward west.")
-        elif choice == 3:
-            self.move((0, -1))
-            self.printer.println("You head toward south.")
+        if options[choice] == "North":
+                self.move((0, 1))
+                self.printer.println("You head toward north.")
+        elif options[choice] == "East":
+                self.move((-1, 0))
+                self.printer.println("You head toward east.")
+        elif options[choice] == "West":
+                self.move((1, 0))
+                self.printer.println("You head toward west.")
+        elif options[choice] == "South":
+                self.move((0, -1))
+                self.printer.println("You head toward south.")
 
     def handle_monster_room(self):
-        room = self.get_room_at(*self.current_room)
-        if room:
-            enemy = getRandomEnemy()
-                
-            fight = Fight(self.player, enemy)
+        currentRoom = self.get_room_at(*self.current_room)
+        if currentRoom and currentRoom.monster:
+            fight = Fight(self.player, currentRoom.monster)
             fight.start()
 
     def handle_item_room(self):
