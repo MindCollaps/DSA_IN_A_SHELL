@@ -118,26 +118,12 @@ def getRandomItems(rarity: Rarity, amount: int, self) -> List[Item]:
         Rarity.LEGENDARY: 0.2
         }
 
-        self.Item_Type = random.choices(list(ItemPossibility.keys()),
-                    weights=list(ItemPossibility.values()))[0]
-
-        if self.Item_Type == Rarity.COMMON:
-                self.description = "Du findest ein normales Item"
-
-        elif self.Item_Type == Rarity.RARE:
-                self.description = "Du findest ein seltenes Item, awesome"
-
-        elif self.Item_Type == Rarity.EPIC:
-                self.description = "Klasse, du findest ein episches Item!"
-
-        elif self.Item_Type == Rarity.LEGENDARY:
-                self.description = "Ein legendäres Item, wie aufregend"
-
-        items_of_rarity = [item for item in items if item.rarity == self.Item_Type]
+        if random.random() <= ItemPossibility[rarity]:
+            items_of_rarity = [item for item in self.items if item.rarity == rarity]
         if items_of_rarity:
             return random.choice(items_of_rarity)
-        else:
-            return None
+
+        return None
 
 def getRandomEnemy(rarity: Rarity, self) -> Enemy:
         EnemyPossibility = {
@@ -147,17 +133,9 @@ def getRandomEnemy(rarity: Rarity, self) -> Enemy:
             Rarity.LEGENDARY: 0.2
             }
         
-        self.Enemy_Type = random.choices(list(EnemyPossibility.keys()),
-                        weights=list(EnemyPossibility.values()))[0]
+        if random.random() <= EnemyPossibility[rarity]:
+            enemy_of_rarity = [item for item in self.items if item.rarity == rarity]
+        if enemy_of_rarity:
+            return random.choice(enemy_of_rarity)
 
-        if self.Enemy_Type == Rarity.COMMON:
-                    self.description = "Ein gewöhnliches Monster erscheint"
-
-        elif self.Enemy_Type == Rarity.RARE:
-                    self.description = "Ein seltenes Monster lauert in diesem Raum, nimm dich in acht"
-
-        elif self.Enemy_Type == Rarity.EPIC:
-                    self.description = "Was ist das? Dieses epische Monster sieht mehr als gefährlich aus"
-
-        elif self.Enemy_Type == Rarity.LEGENDARY:
-                    self.description = "Oh nein! Ein legendäres Monster!"
+        return None
