@@ -4,7 +4,7 @@ from item.usable.Beer import Beer
 from item.weapon.Plank import Plank
 from item.weapon.SoapSock import SoapSock
 from npc.monster import Bat
-from utils import Printer
+from utils.ConsolePrinter import Printer
 from game.Dungeon import Dungeon
 
 if __name__ == "__main__":
@@ -15,6 +15,4 @@ if __name__ == "__main__":
     game = Dungeon(player)
     game.start()
 
-    enemy = Bat()
-    fight = Fight(player, enemy)
-    fight.start()
+   

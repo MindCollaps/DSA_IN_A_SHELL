@@ -1,6 +1,5 @@
 import random
 from typing import List
-import sys
 
 from item.weapon.BasicSword import BasicSword
 from item.weapon.BasicBow import BasicBow
@@ -111,31 +110,24 @@ weapons = [
 ]
 
 def getRandomItems(rarity: Rarity, amount: int, self) -> List[Item]:
-        ItemPossibility = {
-        Rarity.COMMON: 0.8,
-        Rarity.RARE: 0.6,
-        Rarity.EPIC: 0.4,
-        Rarity.LEGENDARY: 0.2
-        }
 
-        if random.random() <= ItemPossibility[rarity]:
-            items_of_rarity = [item for item in self.items if item.rarity == rarity]
+        items_of_rarity = [item for item in items if item.rarity == rarity]
+
         if items_of_rarity:
-            return random.choice(items_of_rarity)
+            return random.choices(items_of_rarity, k=amount)
 
-        return None
+        return []
 
 def getRandomEnemy(rarity: Rarity, self) -> Enemy:
-        EnemyPossibility = {
-            Rarity.COMMON: 0.8,
-            Rarity.RARE: 0.6,
-            Rarity.EPIC: 0.4,
-            Rarity.LEGENDARY: 0.2
-            }
         
-        if random.random() <= EnemyPossibility[rarity]:
-            enemy_of_rarity = [item for item in self.items if item.rarity == rarity]
+        enemy_of_rarity = [monster.monster for monster in monsters if monster.rarity == rarity]
+
         if enemy_of_rarity:
             return random.choice(enemy_of_rarity)
 
         return None
+
+def get_random_rarity():
+    rarities = [Rarity.COMMON, Rarity.RARE, Rarity.EPIC, Rarity.LEGENDARY]
+    probabilities = [0.8, 0.6, 0.4, 0.2]
+    return random.choices(rarities, weights=probabilities, k=1)[0]

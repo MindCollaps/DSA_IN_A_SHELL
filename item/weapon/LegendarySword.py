@@ -1,5 +1,5 @@
 from game.Kampftechnik import Kampftechnik
-from item import Rarity
+from item.Rarity import Rarity
 from item.weapon.Weapon import Weapon
 from utils.dice.Dices import Dice
 

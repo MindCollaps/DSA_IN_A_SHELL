@@ -5,7 +5,7 @@ from rich.style import Style
 from item import Item
 from item.usable.Usable import Usable
 from item.weapon.Weapon import Weapon
-from utils import Printer, MenuOption
+from utils.ConsolePrinter import Printer, MenuOption
 
 
 class Inventory:

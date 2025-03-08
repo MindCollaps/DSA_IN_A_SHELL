@@ -1,9 +1,8 @@
 from enum import Enum
-from npc import monster
-from item import Item
 import random
 from item.Rarity import Rarity
-from game.Random import getRandomItems, getRandomEnemy
+from game.Random import getRandomItems, getRandomEnemy, get_random_rarity
+from item.Item import Item
 
 class RoomType(Enum):
     EMPTY = 0
@@ -14,15 +13,14 @@ class RoomType(Enum):
 
 class Room:
     def __init__(self, dungeon):
-        from game import Dungeon
         from npc import Enemy
         from item import Item
 
         self.description: str = ""
         self.items: list[Item] = []
-        self.monster: Enemy = {}
+        self.monster: Enemy = None
         self.walls: list[tuple[int, int]] = []
-        self.dungeon: Dungeon = dungeon
+        self.dungeon = dungeon
         self.Room_Type: RoomType = RoomType.EMPTY
         self.generate_room()
 
@@ -39,13 +37,24 @@ class Room:
 
         if self.Room_Type == RoomType.EMPTY:
             self.description = "Ein leerer Raum. Hier gibt es nichts Besonderes."
+        
 
         elif self.Room_Type == RoomType.MONSTER:
-            self.monster = getRandomEnemy()
-            self.description = f"Ein düsterer Raum. {self.monster.name} lauert in der Ecke!"
+            rarity = get_random_rarity()
+            self.monster = getRandomEnemy(rarity, self)
+            if self.monster:
+                self.description = f"Ein düsterer Raum. {self.monster.name} lauert in der Ecke!"
+
+            else:
+                self.description = "Ein seltsamer Raum. Etwas scheint nicht zu stimmen."
+
 
         elif self.Room_Type == RoomType.ITEM:
-            item = getRandomItems(Rarity.COMMON, 0)
-            for i in item:
-                self.items.append(i)
-            self.description = "Ein Raum mit einer Schatztruhe. Vielleicht ist etwas Nützliches darin."
+            rarity = get_random_rarity()
+            item = getRandomItems(rarity, 1, self)
+            if item:
+                self.items.extend(item)
+                self.description = "Ein Raum mit einer Schatztruhe. Vielleicht ist etwas Nützliches darin."
+
+            else:
+                self.description = "Ein Raum mit einer leeren Schatztruhe. Nichts Interessantes hier."

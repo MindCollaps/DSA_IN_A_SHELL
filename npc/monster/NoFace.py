@@ -1,14 +1,15 @@
 import random
-
+from game.Character import Spezies
 from game import Player
 from item import Item
-from npc import DroppingNpc
-from npc import Enemy
+from npc.DroppingNpc import DroppingNpc
+from npc.Enemy import Enemy
+from item.weapon.Fist import Fist
 
 
 class NoFace(Enemy, DroppingNpc):
     def __init__(self):
-        super().__init__("No-Face", [], 15, 15)
+        super().__init__("No-Face", [Fist()], Spezies.KleinerGegner)
 
     def attack(self, player: Player) -> int:
         return random.randint(3, 5)

@@ -1,6 +1,6 @@
 from game import Player
 from npc import Enemy
-from utils import Printer, MenuOption
+from utils.ConsolePrinter import Printer, MenuOption
 from utils.ConsolePrinter import options_from_str_list
 from utils.dice.Dices import Dice
 
@@ -23,10 +23,16 @@ class Fight:
 
         if self.player.current_hp <= 0:
             self.printer.println("You died!")
+            return "lose"
         elif self.enemy.current_hp <= 0:
             self.printer.println(f"You defeated {self.enemy.name}!")
+            return "win"
+        elif self.runned:
+            self.printer.println(f"You succesfully ran away from {self.enemy.name}!")
+            return "fled"
 
         self.printer.wait(wait_message=True)
+        return None
         # TODO: Add some color maybe?
 
     def new_round(self):
@@ -69,6 +75,7 @@ class Fight:
             self.fight_menu()
         else:
             self.printer.println(f"{self.player.name} successfully runs away.")
+            self.printer.println("Du bist aus dem Kampf geflohen. Der Gegner lauert immer noch hier.")
             self.printer.wait(wait_message=True)
             self.runned = True
 
@@ -149,6 +156,12 @@ class Fight:
         if attack_roll <= at:
             self.printer.println("You hit your target!\n")
             self.printer.wait(wait_message=True)
+
+            if isinstance(self.enemy.weapon, list):
+                enemy_weapon = self.enemy.weapon[0]
+            else:
+                enemy_weapon = self.enemy.weapon
+
             pa = self.enemy.weapon.parade_value(self.enemy, self.player)
             parade = pa >= self.enemy.aw
             self.printer.println(f"Your enemy is trying {'to parade' if parade else 'to dodge'} your attack")

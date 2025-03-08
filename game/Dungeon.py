@@ -8,7 +8,8 @@ from game.Fight import Fight
 from game import Player
 from npc import Enemy
 from game.Room import Room, RoomType
-from game.Random import getRandomEnemy
+from game.Random import ItemPossibility, MonsterPossibility
+from item.Item import Item
 
 room_visuals_top = {
     0: "╔═════╗",
@@ -41,6 +42,7 @@ class Dungeon:
         self.max_width: int = 0
         self.max_height: int = 0
         self.random: random.Random = random.Random()
+        self.show_room_description: bool = True
 
     def start(self):
         self.printer.println("Choose how long your Adventure should last!")
@@ -66,26 +68,29 @@ class Dungeon:
         if currentRoom is None:
             self.printer.println("You entered a Room that does not exist!")
         elif currentRoom.Room_Type == RoomType.MONSTER:
-            currentRoom.description
-            self.handle_monster_room()
+            self.printer.println(currentRoom.description)
+            if currentRoom.monster:
+                self.printer.wait(wait_message=True, wait_txt="Press enter to face the monster...")  
+                self.handle_monster_room()
         elif currentRoom.Room_Type == RoomType.ITEM:
-            currentRoom.description
-            self.handle_item_room()
+            if self.show_room_description:
+                self.printer.println(currentRoom.description)  
+                self.handle_item_room()
         elif currentRoom.Room_Type == RoomType.EMPTY:
-            currentRoom.description
+            if self.show_room_description:
+                self.printer.println(currentRoom.description)  
 
     def dungeon_menu(self):
         x, y = self.current_room
-        possible_directions = self.get_possible_room_placement_positions(x, y)
         options = []
-        if (0, 1) in possible_directions:
+        if self.get_room_at(x, y + 1) is not None:  # Nord
             options.append("North")
-        if (0, -1) in possible_directions:
+        if self.get_room_at(x, y - 1) is not None:  # Süd
             options.append("South")
-        if (1, 0) in possible_directions:
-            options.append("East")
-        if (-1, 0) in possible_directions:
-            options.append("West")
+        if self.get_room_at(x - 1, y) is not None:  # Osten
+            options.append("East")  
+        if self.get_room_at(x + 1, y) is not None:  # Westen
+            options.append("West")  
 
         if not options:
             self.printer.println("No available directions to move!")
@@ -93,30 +98,42 @@ class Dungeon:
 
         choice, _ = self.printer.menu(options_from_str_list(options))
         if options[choice] == "North":
-                self.move((0, 1))
-                self.printer.println("You head toward north.")
+            self.move((0, 1))
+            self.printer.println("You head toward north.")
         elif options[choice] == "East":
-                self.move((-1, 0))
-                self.printer.println("You head toward east.")
+            self.move((-1, 0))  
+            self.printer.println("You head toward east.")
         elif options[choice] == "West":
-                self.move((1, 0))
-                self.printer.println("You head toward west.")
+            self.move((1, 0)) 
+            self.printer.println("You head toward west.")
         elif options[choice] == "South":
-                self.move((0, -1))
-                self.printer.println("You head toward south.")
+            self.move((0, -1))
+            self.printer.println("You head toward south.")
 
     def handle_monster_room(self):
         currentRoom = self.get_room_at(*self.current_room)
         if currentRoom and currentRoom.monster:
             fight = Fight(self.player, currentRoom.monster)
-            fight.start()
+            outcome = fight.start()
+
+
+            if outcome == "win":
+                currentRoom.Room_Type = RoomType.EMPTY
+                currentRoom.description = "Der Gegner wurde besiegt. Der Raum ist jetzt leer."
+                currentRoom.monster = None  # Entferne das Monster aus dem Raum
+            elif outcome == "fled":
+                pass
+            elif outcome == "lose":
+                currentRoom.description = "Du wurdest besiegt. Der Gegner bewacht diesen Raum."
+
+
 
     def handle_item_room(self):
         room = self.get_room_at(*self.current_room)
         if room and room.items:
-            for item in room.items:
-                self.player.inventory.add_item(item)
-                self.printer.println(f"{item.name} wurde deinem Inventar hinzugefügt!")
+            for item_possibility in room.items:
+                self.player.inventory.add_item(item_possibility.item)
+                self.printer.println(f"{item_possibility.item.name} wurde deinem Inventar hinzugefügt!")
         self.printer.wait(wait_message=True)
 
     def move(self, direction: tuple[int, int]) -> bool:
@@ -137,11 +154,11 @@ class Dungeon:
         options = ["Small", "Middle", "Big",]
         choice, _ = self.printer.menu(options_from_str_list(options))
         if choice == 0 :
-            self.generate_dungeon(10)
-        elif choice == 1 :
             self.generate_dungeon(20)
-        elif choice == 2 :
+        elif choice == 1 :
             self.generate_dungeon(30)
+        elif choice == 2 :
+            self.generate_dungeon(40)
 
     def generate_dungeon(self, num_rooms: int) -> None:
         self.add_room_at(0, 0, Room(self))

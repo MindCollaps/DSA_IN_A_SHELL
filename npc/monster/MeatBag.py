@@ -1,14 +1,15 @@
 import random
-
+from game.Character import Spezies
 from game import Player
 from item import Item
-from npc import DroppingNpc
-from npc import Enemy
+from npc.DroppingNpc import DroppingNpc
+from npc.Enemy import Enemy
+from item.weapon.Fist import Fist
 
 
 class MeatBag(Enemy, DroppingNpc):
     def __init__(self):
-        super().__init__("A weird looking Meat Bag", [], 20, 20)
+        super().__init__("A weird looking Meat Bag", [Fist()], Spezies.KleinerGegner)
 
     def attack(self, player: Player) -> int:
         return random.randint(1, 5)

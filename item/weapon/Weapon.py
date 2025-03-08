@@ -1,7 +1,7 @@
 from game.Kampftechnik import Kampftechnik, get_kampftechnik_wert
 from game.LeitEigenschaft import LeitEigenschaft
 from game.LeitEigenschaft import get_leiteigenschaft
-from item import Item
+from item.Item import Item
 from utils.dice.Dices import Dices
 
 
