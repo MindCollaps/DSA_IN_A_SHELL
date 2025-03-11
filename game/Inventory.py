@@ -71,3 +71,11 @@ class Inventory:
             return False, True
 
         return False, False
+
+
+    def remove_item(self, item_to_remove):
+            # Entfernt das erste gefundene Item
+            for idx, item in enumerate(self.inventory):
+                if item is item_to_remove:
+                    del self.inventory[idx]
+                    break
