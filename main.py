@@ -6,10 +6,11 @@ from item.weapon.SoapSock import SoapSock
 from game.Dungeon import Dungeon
 
 if __name__ == "__main__":
-    player = Player("Tim")
+    print("Tell me your name Adventurer!")
+    PlayerName = input("Name: ")
+    player = Player(PlayerName)
     game = Dungeon(player)
     player.inventory.add_item(Plank())
     player.inventory.add_item(Beer())
     player.inventory.add_item(SoapSock())
-    player.inventory.add_item(EpicKatana())
     game.start()

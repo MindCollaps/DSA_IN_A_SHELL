@@ -93,7 +93,9 @@ class Dungeon:
         if self.get_room_at(x - 1, y) is not None:  # Osten
             options.append("East")  
         if self.get_room_at(x + 1, y) is not None:  # Westen
-            options.append("West")  
+            options.append("West")
+
+        options.append("Inventory") 
 
         if not options:
             self.printer.println("No available directions to move!")
@@ -112,6 +114,20 @@ class Dungeon:
         elif options[choice] == "South":
             self.move((0, -1))
             self.printer.println("You head toward south.")
+        elif options[choice] == "Inventory":
+            self.open_inventory()
+
+
+    def open_inventory(self):
+        action, close = self.player.inventory.inventory_dialog(self.printer, self.player, fight=False)
+        
+        if close:
+            self.printer.clear()
+            self.dungeon_dialogue()
+        elif action:
+            self.printer.clear()
+            self.dungeon_dialogue()
+
 
     def handle_monster_room(self):
         currentRoom = self.get_room_at(*self.current_room)
@@ -143,6 +159,7 @@ class Dungeon:
                 self.player.inventory.add_item(item)
                 self.printer.println(f"{item.name} wurde deinem Inventar hinzugefügt!")
             self.printer.wait(wait_message=True)
+            room.Room_Type = RoomType.EMPTY #Item nach aufsammeln entfernen
 
     def move(self, direction: tuple[int, int]) -> bool:
         x, y = self.current_room
