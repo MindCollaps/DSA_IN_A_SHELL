@@ -120,13 +120,12 @@ class Dungeon:
 
     def open_inventory(self):
         action, close = self.player.inventory.inventory_dialog(self.printer, self.player, fight=False)
-        
+
         if close:
             self.printer.clear()
             self.dungeon_dialogue()
-        elif action:
-            self.printer.clear()
-            self.dungeon_dialogue()
+        else:
+            self.open_inventory()
 
 
     def handle_monster_room(self):
