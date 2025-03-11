@@ -10,6 +10,7 @@ from item.weapon.Fist import Fist
 class NoFace(Enemy, DroppingNpc):
     def __init__(self):
         super().__init__("No-Face", [Fist()], Spezies.KleinerGegner)
+        self.xp_reward = 100
 
     def attack(self, player: Player) -> int:
         return random.randint(3, 5)

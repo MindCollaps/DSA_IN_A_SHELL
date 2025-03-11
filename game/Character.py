@@ -4,7 +4,7 @@ from game.Geldbeutel import Geldbeutel
 from game.Kampftechnik import Kampftechnik
 from game.LeitEigenschaft import LeitEigenschaft, get_leiteigenschaft
 from item.armor.Armor import Armor
-
+from game.leveling_system import LevelSystem
 
 class Spezies(Enum):
     Mensch = (auto(), 5, -5, 8)  # HP_GW, ZK_GW, GW
@@ -19,6 +19,7 @@ class Spezies(Enum):
         self.hp_gw = hp_gw
         self.zk_gw = zk_gw
         self.gs_gw = gs_gw
+        self.kampftechnik = [(kt, 8) for kt in Kampftechnik]
 
 
 class Character:
@@ -28,12 +29,29 @@ class Character:
         self.kampftechnik = [(kt, 8) for kt in Kampftechnik]
         self.leit_eigenschaft = [(le, 8) for le in LeitEigenschaft]
         self.ruestung: Armor | None = None
+        self.current_hp = self.base_hp  # Wird durch @property aktualisiert
+        self.geldbeutel = Geldbeutel()
+        self.geldbeutel.kreuzer = 50  # Startkapital hinzufügen
+        # Debug-Validierung
+        print(f"Initialer Geldbeutel: {id(self.geldbeutel)}")
+        print(f"Kreuzer bei Charaktererstellung: {self.geldbeutel.kreuzer}")
 
-        self.base_hp: int = self.spezies.hp_gw + get_leiteigenschaft(self, LeitEigenschaft.KO) + get_leiteigenschaft(
-            self, LeitEigenschaft.KO)
-        self.zk: int = self.spezies.zk_gw + int(
-            get_leiteigenschaft(self, LeitEigenschaft.KO) + get_leiteigenschaft(self,
-                                                                                LeitEigenschaft.KO) + get_leiteigenschaft(
-                self, LeitEigenschaft.KK) / 6)
-        self.aw: int = int(get_leiteigenschaft(self, LeitEigenschaft.GE) / 2)
-        self.current_hp = self.base_hp
+    @property
+    def base_hp(self) -> int:
+        ko_wert = next(wert for le, wert in self.leit_eigenschaft if le == LeitEigenschaft.KO)
+        return self.spezies.hp_gw + 2 * ko_wert
+
+    @property
+    def zk(self) -> int:
+        ko_wert = next(wert for le, wert in self.leit_eigenschaft if le == LeitEigenschaft.KO)
+        kk_wert = next(wert for le, wert in self.leit_eigenschaft if le == LeitEigenschaft.ST)  # Annahme: KK = ST
+        return self.spezies.zk_gw + int(ko_wert + kk_wert / 6)
+
+    @property
+    def aw(self) -> int:
+        ge_wert = next(wert for le, wert in self.leit_eigenschaft if le == LeitEigenschaft.GE)
+        return int(ge_wert / 2)
+
+    def kampftechnik_wert(self, kampftechnik: Kampftechnik) -> int:
+        """Gibt den Kampftechnik-Wert zurück"""
+        return next(wert for kt, wert in self.kampftechnik if kt == kampftechnik)
