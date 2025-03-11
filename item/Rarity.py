@@ -2,8 +2,10 @@ import enum
 
 
 # Rarity Enum
-class Rarity(enum.Enum):
-    COMMON = 1
-    RARE = 2
-    EPIC = 3
-    LEGENDARY = 4
+from enum import Enum
+
+class Rarity(Enum):
+    COMMON = "Common"
+    RARE = "Rare"
+    EPIC = "Epic"
+    LEGENDARY = "Legendary"

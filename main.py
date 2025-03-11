@@ -9,10 +9,10 @@ from game.Dungeon import Dungeon
 
 if __name__ == "__main__":
     player = Player("Tim")
+    game = Dungeon(player)
     player.inventory.add_item(Plank())
     player.inventory.add_item(Beer())
     player.inventory.add_item(SoapSock())
-    game = Dungeon(player)
     game.start()
 
    

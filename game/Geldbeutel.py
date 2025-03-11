@@ -14,3 +14,12 @@ class Geldbeutel:
         self.silbertaler = 0
         self.heller = 0
         self.kreuzer = 0
+
+    def __str__(self):
+        return (
+            f"Geldbeutel:\n"
+            f"- Dukaten: {self.dukaten}\n"
+            f"- Silbertaler: {self.silbertaler}\n"
+            f"- Heller: {self.heller}\n"
+            f"- Kreuzer: {self.kreuzer}"
+        )

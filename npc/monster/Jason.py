@@ -10,6 +10,7 @@ from item.weapon.Fist import Fist
 class Jason(Enemy, DroppingNpc):
     def __init__(self):
         super().__init__("Jason", [Fist()], Spezies.KleinerGegner)
+        self.xp_reward = 100
 
     def attack(self, player: Player) -> int:
         return random.randint(3, 8)

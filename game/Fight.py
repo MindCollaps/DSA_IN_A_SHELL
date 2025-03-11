@@ -15,25 +15,6 @@ class Fight:
         self.printer.use_layout()
         self.runned = False
 
-    def start(self):
-        while self.player.current_hp > 0 and self.enemy.current_hp > 0 and not self.runned:
-            self.new_round()
-
-        self.printer.clear()
-
-        if self.player.current_hp <= 0:
-            self.printer.println("You died!")
-            return "lose"
-        elif self.enemy.current_hp <= 0:
-            self.printer.println(f"You defeated {self.enemy.name}!")
-            return "win"
-        elif self.runned:
-            self.printer.println(f"You succesfully ran away from {self.enemy.name}!")
-            return "fled"
-
-        self.printer.wait(wait_message=True)
-        return None
-        # TODO: Add some color maybe?
 
     def new_round(self):
         self.printer.clear()
@@ -102,7 +83,7 @@ class Fight:
 
     def attack_enemy(self):
         attack_roll = Dice(20).roll()
-        at = self.enemy.weapon.attack_value(self.enemy, self.player)
+        at = self.enemy.weapon.attack_value(self.enemy)
 
         if attack_roll <= at:
             self.printer.println(f"{self.enemy.name} hits you!\n")
@@ -112,7 +93,7 @@ class Fight:
             self.printer.wait(wait_message=True)
 
     def parade_player(self):
-        pa = self.player.weapon_equipped.parade_value(self.player, self.enemy)
+        pa = self.player.weapon_equipped.parade_value(self.player)
         self.printer.println(f"You can dodge ({self.player.aw}) or try to parade ({pa})")
         options = [MenuOption(f"Dodge ({self.player.aw})"), MenuOption(f"Parade ({pa})")]
         choice, _ = self.printer.menu(options)
@@ -133,7 +114,7 @@ class Fight:
             self.printer.println("You parade the attack!")
         else:
             self.printer.println(f"You fail to {dodge_txt} the attack")
-            _, dmg = self.enemy.weapon.damage_roll()
+            dice_text, dmg = self.enemy.weapon.damage_roll()
 
             if self.player.ruestung is not None:
                 dmg -= self.player.ruestung.ruestungsschutz
@@ -145,7 +126,7 @@ class Fight:
 
     def attack_player(self):
         self.printer.clear()
-        at = self.player.weapon_equipped.attack_value(self.player, self.enemy)
+        at = self.player.weapon_equipped.attack_value(self.player)
         self.printer.println("You try to attack!")
         self.printer.println(f"Your {self.player.weapon_equipped.name}s AT is {at}\n")
         self.printer.wait(wait_message=True, wait_txt="Press enter to roll")
@@ -162,7 +143,7 @@ class Fight:
             else:
                 enemy_weapon = self.enemy.weapon
 
-            pa = self.enemy.weapon.parade_value(self.enemy, self.player)
+            pa = self.enemy.weapon.parade_value(self.enemy)
             parade = pa >= self.enemy.aw
             self.printer.println(f"Your enemy is trying {'to parade' if parade else 'to dodge'} your attack")
             parade_roll = Dice(20).roll()
@@ -170,7 +151,12 @@ class Fight:
                 self.printer.println(f"Your enemy {'paraded' if parade else 'dodged'} your attack!")
             else:
                 self.printer.println(f"Your enemy cannot {'parade' if parade else 'dodge'} your attack!\n")
-                self.printer.println(f"Your weapons damage is {self.player.weapon_equipped.tp.dice_text()}")
+                dmg_text = (
+                    self.player.weapon_equipped.tp.dice_text()
+                    if hasattr(self.player.weapon_equipped.tp, 'dice_text')
+                    else f"1W{self.player.weapon_equipped.tp.value}"  # Fallback für Dice
+                )
+                self.printer.println(f"Your weapons damage is {dmg_text}")
                 self.printer.wait(wait_message=True, wait_txt="Press enter to roll")
                 roll, dmg = self.player.weapon_equipped.damage_roll()
                 self.printer.println(f"\n{roll}")
@@ -183,3 +169,19 @@ class Fight:
             self.printer.println("You miss your enemy!")
 
         self.printer.wait(wait_message=True)
+
+    def start(self):
+        while self.player.current_hp > 0 and self.enemy.current_hp > 0 and not self.runned:
+            self.new_round()
+
+        self.printer.clear()
+        if self.player.current_hp <= 0:
+            self.printer.println("You died!")
+            return "lose"
+        elif self.enemy.current_hp <= 0:
+            self.printer.println(f"You defeated {self.enemy.name}!")
+            self.player.gain_xp(self.enemy.xp_reward)  # XP-Belohnung
+            return "win"
+        elif self.runned:
+            self.printer.println(f"You succesfully ran away from {self.enemy.name}!")
+            return "fled"

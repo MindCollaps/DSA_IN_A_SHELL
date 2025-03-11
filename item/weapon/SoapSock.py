@@ -3,7 +3,14 @@ from item.Rarity import Rarity
 from item.weapon.Weapon import Weapon
 from utils.dice.Dices import Dice
 
-
 class SoapSock(Weapon):
     def __init__(self):
-        super().__init__("Soap Sock", "Its a soap in a sock, so what?", 25, Rarity.COMMON, Kampftechnik.Hiebwaffen, Dice(6) + 1)
+        super().__init__(
+            name="Soap Sock",
+            description="Seifenstück in einem Socken",
+            price=1,
+            rarity=Rarity.COMMON,
+            kampftechnik=Kampftechnik.RAUFEN,
+            tp=1 * Dice(4),
+            at_bonus=0
+        )

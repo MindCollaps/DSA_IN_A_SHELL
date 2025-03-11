@@ -1,24 +1,15 @@
 from enum import Enum
-
 from game.LeitEigenschaft import LeitEigenschaft
 
-
-def get_kampftechnik_wert(player, kampftechnik) -> int:
-    return player.kampftechnik[kampftechnik.id - 1][1]
-
-
-def set_kampftechnik_wert(player, kampftechnik, value: int):
-    player.kampftechnik[kampftechnik.id - 1] = (kampftechnik, value)
-
-
 class Kampftechnik(Enum):
-    Armbrueste = (0, LeitEigenschaft.FF)
-    Boegen = (1, LeitEigenschaft.FF)
-    Dolche = (2, LeitEigenschaft.GE)
-    Fechtwaffen = (3, LeitEigenschaft.GE)
-    Hiebwaffen = (4, LeitEigenschaft.KK)
-    Kettenwaffen = (5, LeitEigenschaft.KK)
-    Lanzen = (6, LeitEigenschaft.KK)
+    # Korrekte Referenzierung der LeitEigenschaft-Enum-Member
+    Armbrueste = (1, LeitEigenschaft.FF)
+    Boegen = (2, LeitEigenschaft.FF)
+    Dolche = (3, LeitEigenschaft.GE)
+    Fechtwaffen = (4, LeitEigenschaft.GE)
+    Hiebwaffen = (5, LeitEigenschaft.KK)
+    Kettenwaffen = (6, LeitEigenschaft.KK)
+    Lanzen = (7, LeitEigenschaft.KK)
     RAUFEN = (8, LeitEigenschaft.KK)
     Schilde = (9, LeitEigenschaft.KK)
     Schwerter = (10, LeitEigenschaft.GE)
@@ -29,4 +20,4 @@ class Kampftechnik(Enum):
 
     def __init__(self, id, leiteigenschaft: LeitEigenschaft):
         self.id = id
-        self.leiteigenschaft: LeitEigenschaft = leiteigenschaft
+        self.leiteigenschaft = leiteigenschaft

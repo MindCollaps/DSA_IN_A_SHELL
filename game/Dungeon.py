@@ -55,7 +55,8 @@ class Dungeon:
 
     def dungeon_dialogue(self):
         self.printer.clear()
-        self.printer.println(self.print_dungeon())
+        status_line = f"Level: {self.player.level} | XP: {self.player.xp}/{self.player.xp_to_next}"
+        self.printer.println(status_line + "\n" + self.print_dungeon())
         self.dungeon_menu()
         self.printer.clear()
         self.printer.println(self.print_dungeon())
@@ -78,7 +79,9 @@ class Dungeon:
                 self.handle_item_room()
         elif currentRoom.Room_Type == RoomType.EMPTY:
             if self.show_room_description:
-                self.printer.println(currentRoom.description)  
+                self.printer.println(currentRoom.description)
+        elif currentRoom.Room_Type == RoomType.SHOP:
+            self.handle_shop_room()
 
     def dungeon_menu(self):
         x, y = self.current_room
@@ -126,15 +129,21 @@ class Dungeon:
             elif outcome == "lose":
                 currentRoom.description = "Du wurdest besiegt. Der Gegner bewacht diesen Raum."
 
+    def handle_shop_room(self):
+        from game.Shop import Shop
+        print(f"Character Kreuzer: {self.player.geldbeutel.kreuzer}")  # In handle_shop_room()
+        Shop(self.player).start_shop()
+        current_room = self.get_room_at(*self.current_room)
+        current_room.Room_Type = RoomType.EMPTY  # Shop nach Besuch schließen
 
 
     def handle_item_room(self):
         room = self.get_room_at(*self.current_room)
         if room and room.items:
-            for item_possibility in room.items:
-                self.player.inventory.add_item(item_possibility.item)
-                self.printer.println(f"{item_possibility.item.name} wurde deinem Inventar hinzugefügt!")
-        self.printer.wait(wait_message=True)
+            for item in room.items:
+                self.player.inventory.add_item(item)
+                self.printer.println(f"{item.name} wurde deinem Inventar hinzugefügt!")
+            self.printer.wait(wait_message=True)
 
     def move(self, direction: tuple[int, int]) -> bool:
         x, y = self.current_room
@@ -161,22 +170,38 @@ class Dungeon:
             self.generate_dungeon(40)
 
     def generate_dungeon(self, num_rooms: int) -> None:
-        self.add_room_at(0, 0, Room(self))
-        self.max_width = int(num_rooms / 1.5)
-        self.max_height = int(num_rooms / 1.5)
+        self.rooms = [[Room(self)]]
+        self.starting_room = (0, 0)
+        self.current_room = (0, 0)
+        self.max_width = 0
+        self.max_height = 0
 
-        for i in range(num_rooms):
-            room = Room(self)
-            x, y = 0, 0
+        rooms_added = 1
+        failsafe = 0
+
+        while rooms_added < num_rooms and failsafe < 1000:
             x, y = self.select_random_room()
+            possible = self.get_possible_room_placement_positions(x, y)
 
-            possible_positions = self.get_possible_room_placement_positions(x, y)
-            self.random.shuffle(possible_positions)
-            for dx, dy in possible_positions:
-                new_x, new_y = x + dx, y + dy
-                self.add_room_at(new_x, new_y, room)
+            if not possible:
+                failsafe += 1
+                continue
 
-        self.current_room = self.starting_room
+            dx, dy = random.choice(possible)
+            new_x, new_y = x + dx, y + dy
+
+            if not self.get_room_at(new_x, new_y):
+                new_room = Room(self)
+                if random.randint(1, 10) == 1:
+                    new_room.Room_Type = RoomType.SHOP
+                    new_room.description = "Ein mysteriöser Shop"
+
+                self.add_room_at(new_x, new_y, new_room)
+                rooms_added += 1
+                self.max_width = max(self.max_width, new_x)
+                self.max_height = max(self.max_height, new_y)
+                failsafe = 0
+
         self.shrink_dungeon()
 
     def select_random_dead_end(self) -> Tuple[int, int]:
@@ -202,32 +227,30 @@ class Dungeon:
         return self.random.choice(dead_ends)
 
     def select_random_room(self) -> Tuple[int, int]:
-        rooms = []
-        for y in range(self.max_height, -1, -1):
-            for x in range(self.max_width, -1, -1):
-                room = self.get_room_at(x, y)
-                if room is not None:
-                    if len(self.get_possible_room_placement_positions(x, y)) > 0:
-                        rooms.append((x, y))
+        valid_rooms = []
+        for y in range(len(self.rooms)):
+            for x in range(len(self.rooms[y])):
+                if self.rooms[y][x] and self.get_possible_room_placement_positions(x, y):
+                    valid_rooms.append((x, y))
 
-        return self.random.choice(rooms)
+        if not valid_rooms:
+            return (0, 0)  # Fallback zum Startraum
+
+        return random.choice(valid_rooms)
 
     def get_possible_room_placement_positions(self, x: int, y: int) -> List[Tuple[int, int]]:
-        possible_positions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        possible = []
 
-        if self.get_room_at(x + 1, y) is not None or self.max_width <= x:
-            possible_positions.remove((1, 0))
+        for dx, dy in directions:
+            new_x = x + dx
+            new_y = y + dy
+            if new_x < 0 or new_y < 0:
+                continue
+            if not self.get_room_at(new_x, new_y):
+                possible.append((dx, dy))
 
-        if self.get_room_at(x - 1, y) is not None or self.max_width <= x * -1:
-            possible_positions.remove((-1, 0))
-
-        if self.get_room_at(x, y + 1) is not None or self.max_height <= y:
-            possible_positions.remove((0, 1))
-
-        if self.get_room_at(x, y - 1) is not None or y == 0:
-            possible_positions.remove((0, -1))
-
-        return possible_positions
+        return possible
 
     def get_neighboring_rooms(self, x: int, y: int) -> List[Tuple[int, int]]:
         possible_positions = [(0, 1), (0, -1), (1, 0), (-1, 0)]

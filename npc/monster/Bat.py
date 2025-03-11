@@ -7,6 +7,7 @@ from npc.Enemy import Enemy
 class Bat(Enemy, DroppingNpc):
     def __init__(self):
         super().__init__("Bat", [Fist()], Spezies.KleinerGegner) #Todo make claws?
+        self.xp_reward = 100
 
     def get_drops(self) -> list[object]:
         return []

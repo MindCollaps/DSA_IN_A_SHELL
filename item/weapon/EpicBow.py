@@ -3,9 +3,14 @@ from item.Rarity import Rarity
 from item.weapon.Weapon import Weapon
 from utils.dice.Dices import Dice
 
-
-
 class EpicBow(Weapon):
     def __init__(self):
-        super().__init__("Epic Bow", "Its called Shadow String", 220, Rarity.EPIC,
-                         Kampftechnik.Boegen, Dice(6) + 5)
+        super().__init__(
+            name="Epic Bow",
+            description="Ein magischer Bogen mit Elfenbein-Verzierungen",
+            price=350,
+            rarity=Rarity.EPIC,
+            kampftechnik=Kampftechnik.Boegen,
+            tp=2 * Dice(8),
+            at_bonus=4
+        )
