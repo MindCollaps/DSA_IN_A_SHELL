@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from enum import Enum
 
 
@@ -10,7 +10,7 @@ class EffectType(Enum):
     SELF_HARM = 4
 
 
-class Usable:
+class Usable(ABC):
     @abstractmethod
     def consume(self, player) -> list[(int | str, EffectType)]:
         pass

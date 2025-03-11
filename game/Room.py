@@ -1,51 +1,50 @@
 from enum import Enum
-from npc import monster
-from item import Item
 import random
 from item.Rarity import Rarity
-from game.Random import getRandomItems, getRandomEnemy
+from game.Random import getRandomItems, getRandomEnemy, get_random_rarity
 
 class RoomType(Enum):
     EMPTY = 0
     MONSTER = 1
     ITEM = 2
     BOSS = 3
-
+    SHOP = 4
 
 class Room:
     def __init__(self, dungeon):
-        from game import Dungeon
-        from npc import Enemy
-        from item import Item
-
         self.description: str = ""
-        self.items: list[Item] = []
-        self.monster: Enemy = {}
-        self.walls: list[tuple[int, int]] = []
-        self.dungeon: Dungeon = dungeon
+        self.items: list = []
+        self.monster = None
+        self.walls: list = []
+        self.dungeon = dungeon
         self.Room_Type: RoomType = RoomType.EMPTY
         self.generate_room()
 
     def generate_room(self):
         room_type_probabilities = {
-        RoomType.EMPTY: 0.4,
-        RoomType.ITEM: 0.2,
-        RoomType.BOSS: 0.1,
-        RoomType.MONSTER: 0.3
+            RoomType.EMPTY: 0.35,
+            RoomType.ITEM: 0.2,
+            RoomType.BOSS: 0.1,
+            RoomType.MONSTER: 0.3,
+            RoomType.SHOP: 0.05
         }
 
-        self.Room_Type = random.choices(list(room_type_probabilities.keys()),
-                weights=list(room_type_probabilities.values()))[0]
+        self.Room_Type = random.choices(
+            list(room_type_probabilities.keys()),
+            weights=list(room_type_probabilities.values()),
+            k=1
+        )[0]
 
         if self.Room_Type == RoomType.EMPTY:
             self.description = "Ein leerer Raum. Hier gibt es nichts Besonderes."
 
         elif self.Room_Type == RoomType.MONSTER:
-            self.monster = getRandomEnemy()
-            self.description = f"Ein düsterer Raum. {self.monster.name} lauert in der Ecke!"
+            rarity = get_random_rarity()
+            self.monster = getRandomEnemy(rarity)
+            self.description = f"Ein düsterer Raum. {self.monster.name} lauert in der Ecke!" if self.monster else "Ein seltsamer Raum. Etwas scheint nicht zu stimmen."
 
         elif self.Room_Type == RoomType.ITEM:
-            item = getRandomItems(Rarity.COMMON, 0)
-            for i in item:
-                self.items.append(i)
-            self.description = "Ein Raum mit einer Schatztruhe. Vielleicht ist etwas Nützliches darin."
+            rarity = get_random_rarity()
+            items = getRandomItems(rarity, 1)
+            self.items.extend(items)
+            self.description = "Ein Raum mit einer Schatztruhe. Vielleicht ist etwas Nützliches darin." if items else "Ein Raum mit einer leeren Schatztruhe. Nichts Interessantes hier."

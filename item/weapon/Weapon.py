@@ -1,35 +1,34 @@
-from game.Kampftechnik import Kampftechnik, get_kampftechnik_wert
-from game.LeitEigenschaft import LeitEigenschaft
-from game.LeitEigenschaft import get_leiteigenschaft
-from item import Item
-from utils.dice.Dices import Dices
+from enum import Enum
+from game.Kampftechnik import Kampftechnik
+from item.Rarity import Rarity
+from utils.dice.Dices import Dices, Dice
 
-
-class Weapon(Item):
-    def __init__(self, name, description, price, rarity, kampftechnik: Kampftechnik, tp: Dices, at_bonus: int = 0,
-                 pa_bonus: int = 0):
-        super().__init__(name, description, price, rarity)
-        self.kampftechnik: Kampftechnik = kampftechnik
+class Weapon:
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: int,
+        rarity: Rarity,
+        kampftechnik: Kampftechnik,
+        tp: Dices,  # 🎯 Muss ein Dices-Objekt sein
+        at_bonus: int = 0,  # Angriffsbonus
+        pa_bonus: int = 0   # Paradebonus (optional)
+    ):
+        self.name = name
+        self.description = description
+        self.price = price
+        self.rarity = rarity
+        self.kampftechnik = kampftechnik
         self.tp = tp
         self.at_bonus = at_bonus
         self.pa_bonus = pa_bonus
 
-    def attack_value(self, player, attacks) -> int:
-        mut = get_leiteigenschaft(player, LeitEigenschaft.MU)
-        mut_modifier = max(0, (mut - 8) // 3)
-        at = get_kampftechnik_wert(player, self.kampftechnik) + mut_modifier
-        return at + self.at_bonus
+    def attack_value(self, character) -> int:
+        return self.at_bonus + character.kampftechnik_wert(self.kampftechnik)
 
-    def parade_value(self, player, attacks) -> int:
-        kampftechnik_wert = get_kampftechnik_wert(player, self.kampftechnik)
-        base_pa = kampftechnik_wert // 2
-        leiteigenschaft = self.kampftechnik.leiteigenschaft
-        pa_modifier = max(0, (get_leiteigenschaft(player, leiteigenschaft) - 8) // 3)
-        pa = base_pa + pa_modifier
-        return pa + self.pa_bonus
+    def parade_value(self, character) -> int:
+        return self.pa_bonus + character.kampftechnik_wert(self.kampftechnik)
 
-    def damage_roll(self) -> (str, int):
+    def damage_roll(self) -> tuple[str, int]:
         return self.tp.roll()
-
-    def equip(self, player):
-        player.weapon_equipped = self
