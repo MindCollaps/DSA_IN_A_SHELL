@@ -131,7 +131,6 @@ class Dungeon:
 
     def handle_shop_room(self):
         from game.Shop import Shop
-        print(f"Character Kreuzer: {self.player.geldbeutel.kreuzer}")  # In handle_shop_room()
         Shop(self.player).start_shop()
         current_room = self.get_room_at(*self.current_room)
         current_room.Room_Type = RoomType.EMPTY  # Shop nach Besuch schließen

@@ -32,9 +32,6 @@ class Character:
         self.current_hp = self.base_hp  # Wird durch @property aktualisiert
         self.geldbeutel = Geldbeutel()
         self.geldbeutel.kreuzer = 50  # Startkapital hinzufügen
-        # Debug-Validierung
-        print(f"Initialer Geldbeutel: {id(self.geldbeutel)}")
-        print(f"Kreuzer bei Charaktererstellung: {self.geldbeutel.kreuzer}")
 
     @property
     def base_hp(self) -> int:

@@ -9,11 +9,11 @@ class Shop:
         self.printer = Printer()
         # Item-Instanzen aus den ItemPossibility-Objekten extrahieren
         self.items = random.sample([ip.item for ip in items + weapons], 5)
+        self.printer.use_layout()
 
     def start_shop(self):
         while True:
             self.printer.clear()
-            self.printer.println("=== SHOP ===")
             # Aktuelle Kreuzer direkt aus dem Character-Objekt holen
             self.printer.println(f"Kreuzer: {self.player.geldbeutel.kreuzer}\n")
 

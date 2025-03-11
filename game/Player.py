@@ -31,11 +31,11 @@ class Player(Character):
         print(f"\n=== LEVEL {self.level} ERREICHT ===")
         print("Wähle eine Eigenschaft zu verbessern:")
         for idx, eigenschaft in enumerate(LeitEigenschaft):
-            print(f"{idx + 1}. {eigenschaft.value}")
+            print(f"{idx + 1}. {eigenschaft.name_de}")
 
         while True:
             try:
-                choice = int(input("Auswahl (1-4): ")) - 1
+                choice = int(input("Auswahl (1-8): ")) - 1
                 selected = list(LeitEigenschaft)[choice]
                 self.increase_attribute(selected)
                 print(f"{selected.value} erhöht!")

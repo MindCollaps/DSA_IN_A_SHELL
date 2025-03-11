@@ -30,7 +30,7 @@ class Inventory:
 
             if isinstance(item, Usable):
                 op = MenuOption("Use")
-                op.selected = lambda item=item: player.consume(item.consume())
+                op.selected = lambda item=item: player.consume(item.consume(player), printer)
                 subMenu.append(op)
 
             if isinstance(item, Weapon):
