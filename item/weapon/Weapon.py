@@ -1,19 +1,19 @@
-from enum import Enum
 from game.Kampftechnik import Kampftechnik
 from item.Rarity import Rarity
-from utils.dice.Dices import Dices, Dice
+from utils.dice.Dices import Dices
+
 
 class Weapon:
     def __init__(
-        self,
-        name: str,
-        description: str,
-        price: int,
-        rarity: Rarity,
-        kampftechnik: Kampftechnik,
-        tp: Dices,  # 🎯 Muss ein Dices-Objekt sein
-        at_bonus: int = 0,  # Angriffsbonus
-        pa_bonus: int = 0   # Paradebonus (optional)
+            self,
+            name: str,
+            description: str,
+            price: int,
+            rarity: Rarity,
+            kampftechnik: Kampftechnik,
+            tp: Dices,  # 🎯 Muss ein Dices-Objekt sein
+            at_bonus: int = 0,  # Angriffsbonus
+            pa_bonus: int = 0  # Paradebonus (optional)
     ):
         self.name = name
         self.description = description
@@ -32,3 +32,6 @@ class Weapon:
 
     def damage_roll(self) -> tuple[str, int]:
         return self.tp.roll()
+
+    def get_description(self, character):
+        return f"Weapon: {self.name} ({self.description})\nAT: {self.attack_value(character)}\nPA: {self.parade_value(character)}\nTP: {self.tp.dice_text()}"

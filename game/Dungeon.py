@@ -1,15 +1,11 @@
 import random
 from typing import List, Tuple, Optional
-from xml.etree.ElementTree import tostring
 
-from utils.ConsolePrinter import Printer, MenuOption
-from utils.ConsolePrinter import options_from_str_list
-from game.Fight import Fight
 from game import Player
-from npc import Enemy
+from game.Fight import Fight
 from game.Room import Room, RoomType
-from game.Random import ItemPossibility, MonsterPossibility
-from item.Item import Item
+from utils.ConsolePrinter import Printer
+from utils.ConsolePrinter import options_from_str_list
 
 room_visuals_top = {
     0: "╔═════╗",
@@ -23,12 +19,21 @@ room_visuals_middle = {
     3: ["╝     ╚", "╗     ╔"],
 }
 
+room_visuals_middle_cleared = {
+    0: ["║░░░░░║", "║░░░░░║"],
+    1: ["╝░░░░░║", "╗░░░░░║"],
+    2: ["║░░░░░╚", "║░░░░░╔"],
+    3: ["╝░░░░░╚", "╗░░░░░╔"],
+}
+
 room_visuals_bottom = {
     0: "╚═════╝",
     1: "╚═╗ ╔═╝",
 }
 
 empty = "       "
+
+player_symbol = "█"
 
 
 class Dungeon:
@@ -42,11 +47,11 @@ class Dungeon:
         self.max_width: int = 0
         self.max_height: int = 0
         self.random: random.Random = random.Random()
-        self.show_room_description: bool = True
 
     def start(self):
         self.printer.println("Choose how long your Adventure should last!")
         self.dungeon_choice()
+        self.rooms[self.starting_room[1]][self.starting_room[0]].visited = True
         self.printer.clear()
         self.printer.println("Alright, your Adventure starts now!")
         self.printer.wait(wait_message=True, wait_txt="Press enter to start the adventure...")
@@ -61,26 +66,22 @@ class Dungeon:
         self.printer.clear()
         self.printer.println(self.print_dungeon())
         self.printer.wait(wait_message=True, wait_txt="Press enter to enter the room...")
-        self.dungeon_room_message()
+        self.enter_dungeon_room()
         self.printer.wait(wait_message=True, wait_txt="Press enter to continue...")
 
-    def dungeon_room_message(self):
-        currentRoom = self.get_room_at(*self.current_room)
-        if currentRoom is None:
+    def enter_dungeon_room(self):
+        current_room = self.get_room_at(*self.current_room)
+        if current_room is None:
             self.printer.println("You entered a Room that does not exist!")
-        elif currentRoom.Room_Type == RoomType.MONSTER:
-            self.printer.println(currentRoom.description)
-            if currentRoom.monster:
-                self.printer.wait(wait_message=True, wait_txt="Press enter to face the monster...")  
+        elif current_room.Room_Type == RoomType.EMPTY or current_room.visited:
+            self.printer.println(current_room.description)
+            self.rooms[self.current_room[1]][self.current_room[0]].visited = True
+        elif current_room.Room_Type == RoomType.MONSTER:
+            if current_room.monster:
                 self.handle_monster_room()
-        elif currentRoom.Room_Type == RoomType.ITEM:
-            if self.show_room_description:
-                self.printer.println(currentRoom.description)  
-                self.handle_item_room()
-        elif currentRoom.Room_Type == RoomType.EMPTY:
-            if self.show_room_description:
-                self.printer.println(currentRoom.description)
-        elif currentRoom.Room_Type == RoomType.SHOP:
+        elif current_room.Room_Type == RoomType.ITEM:
+            self.handle_item_room()
+        elif current_room.Room_Type == RoomType.SHOP:
             self.handle_shop_room()
 
     def dungeon_menu(self):
@@ -91,11 +92,11 @@ class Dungeon:
         if self.get_room_at(x, y - 1) is not None:  # Süd
             options.append("South")
         if self.get_room_at(x - 1, y) is not None:  # Osten
-            options.append("East")  
+            options.append("East")
         if self.get_room_at(x + 1, y) is not None:  # Westen
             options.append("West")
 
-        options.append("Inventory") 
+        options.append("Inventory")
 
         if not options:
             self.printer.println("No available directions to move!")
@@ -106,17 +107,16 @@ class Dungeon:
             self.move((0, 1))
             self.printer.println("You head toward north.")
         elif options[choice] == "East":
-            self.move((-1, 0))  
+            self.move((-1, 0))
             self.printer.println("You head toward east.")
         elif options[choice] == "West":
-            self.move((1, 0)) 
+            self.move((1, 0))
             self.printer.println("You head toward west.")
         elif options[choice] == "South":
             self.move((0, -1))
             self.printer.println("You head toward south.")
         elif options[choice] == "Inventory":
             self.open_inventory()
-
 
     def open_inventory(self):
         action, close = self.player.inventory.inventory_dialog(self.printer, self.player, fight=False)
@@ -127,38 +127,41 @@ class Dungeon:
         else:
             self.open_inventory()
 
-
     def handle_monster_room(self):
         currentRoom = self.get_room_at(*self.current_room)
+        self.printer.println(currentRoom.description)
+        self.printer.wait(wait_message=True, wait_txt="Press enter to face the monster...")
         if currentRoom and currentRoom.monster:
             fight = Fight(self.player, currentRoom.monster)
             outcome = fight.start()
 
-
             if outcome == "win":
-                currentRoom.Room_Type = RoomType.EMPTY
                 currentRoom.description = "Der Gegner wurde besiegt. Der Raum ist jetzt leer."
                 currentRoom.monster = None  # Entferne das Monster aus dem Raum
+                currentRoom.visited = True
             elif outcome == "fled":
                 pass
             elif outcome == "lose":
                 currentRoom.description = "Du wurdest besiegt. Der Gegner bewacht diesen Raum."
+                currentRoom.visited = True
 
     def handle_shop_room(self):
         from game.Shop import Shop
         Shop(self.player).start_shop()
-        current_room = self.get_room_at(*self.current_room)
-        current_room.Room_Type = RoomType.EMPTY  # Shop nach Besuch schließen
-
+        currentRoom = self.get_room_at(*self.current_room)
+        currentRoom.description = "Du hast diesen Shop bereits besucht."
+        currentRoom.visited = True
 
     def handle_item_room(self):
-        room = self.get_room_at(*self.current_room)
-        if room and room.items:
-            for item in room.items:
+        currentRoom = self.get_room_at(*self.current_room)
+        self.printer.println(currentRoom.description)
+        if currentRoom and currentRoom.items:
+            for item in currentRoom.items:
                 self.player.inventory.add_item(item)
                 self.printer.println(f"{item.name} wurde deinem Inventar hinzugefügt!")
-            self.printer.wait(wait_message=True)
-            room.Room_Type = RoomType.EMPTY #Item nach aufsammeln entfernen
+        currentRoom.items = []
+        currentRoom.description = "Du hast diesen Raum bereits geplündert."
+        currentRoom.visited = True
 
     def move(self, direction: tuple[int, int]) -> bool:
         x, y = self.current_room
@@ -174,14 +177,14 @@ class Dungeon:
         g.seed(seed)
         self.random.setstate(g.getstate())
 
-    def dungeon_choice(self,):
-        options = ["Small", "Middle", "Big",]
+    def dungeon_choice(self, ):
+        options = ["Small", "Middle", "Big", ]
         choice, _ = self.printer.menu(options_from_str_list(options))
-        if choice == 0 :
+        if choice == 0:
             self.generate_dungeon(20)
-        elif choice == 1 :
+        elif choice == 1:
             self.generate_dungeon(30)
-        elif choice == 2 :
+        elif choice == 2:
             self.generate_dungeon(40)
 
     def generate_dungeon(self, num_rooms: int) -> None:
@@ -351,18 +354,19 @@ class Dungeon:
                     else:
                         neighbors = self.get_neighboring_rooms(x, y)
                         to_print = ""
+                        visuals = room_visuals_middle if not room.visited else room_visuals_middle_cleared
                         if (1, 0) in neighbors and (-1, 0) in neighbors:
-                            to_print = room_visuals_middle[3][i]
+                            to_print = visuals[3][i]
                         elif (1, 0) in neighbors:
-                            to_print = room_visuals_middle[1][i]
+                            to_print = visuals[1][i]
                         elif (-1, 0) in neighbors:
-                            to_print = room_visuals_middle[2][i]
+                            to_print = visuals[2][i]
                         else:
-                            to_print = room_visuals_middle[0][i]
+                            to_print = visuals[0][i]
 
                         if i == 1:
                             if self.current_room == (x, y):
-                                to_print = to_print[:3] + "X" + to_print[4:]
+                                to_print = to_print[:3] + player_symbol + to_print[4:]
                         dungeonText += to_print
                 dungeonText += "\n"
             for x in range(self.max_width, -1, - 1):

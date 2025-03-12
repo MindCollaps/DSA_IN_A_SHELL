@@ -3,6 +3,7 @@ from item.Rarity import Rarity
 from item.weapon.Weapon import Weapon
 from utils.dice.Dices import Dice
 
+
 class BasicDagger(Weapon):
     def __init__(self):
         super().__init__(

@@ -1,10 +1,10 @@
 from game.Character import Character, Spezies
-from game.Geldbeutel import Geldbeutel
 from game.Inventory import Inventory
-from item.weapon.Fist import Fist
-from item.usable.Usable import EffectType
 from game.LeitEigenschaft import LeitEigenschaft
-from game.leveling_system import LevelSystem
+from game.LevelingSystem import LevelSystem
+from item.usable.Usable import EffectType
+from item.usable.Usable import Usable
+from item.weapon.Fist import Fist
 
 
 class Player(Character):
@@ -53,7 +53,9 @@ class Player(Character):
     def equip_weapon(self, weapon):
         self.weapon_equipped = weapon
 
-    def consume(self, effect: list[(int | str, EffectType)], printer):
+    def consume(self, item: Usable, printer):
+        effect: list[(int | str, EffectType)] = item.consume(self)
+
         for i in effect:
             match i[1]:
                 case EffectType.HEAL:
@@ -70,3 +72,5 @@ class Player(Character):
                 case EffectType.TEXT:
                     text = i[0]
                     printer.println(text)
+
+        self.inventory.remove_item(item)

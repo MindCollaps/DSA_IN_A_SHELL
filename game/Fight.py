@@ -15,7 +15,6 @@ class Fight:
         self.printer.use_layout()
         self.runned = False
 
-
     def new_round(self):
         self.printer.clear()
         if self.turn:

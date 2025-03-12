@@ -2,9 +2,9 @@ from enum import Enum, auto
 
 from game.Geldbeutel import Geldbeutel
 from game.Kampftechnik import Kampftechnik
-from game.LeitEigenschaft import LeitEigenschaft, get_leiteigenschaft
+from game.LeitEigenschaft import LeitEigenschaft
 from item.armor.Armor import Armor
-from game.leveling_system import LevelSystem
+
 
 class Spezies(Enum):
     Mensch = (auto(), 5, -5, 8)  # HP_GW, ZK_GW, GW
@@ -12,7 +12,6 @@ class Spezies(Enum):
     HalbElf = (auto(), 5, -6, 8)
     Zwerg = (auto(), 8, -4, 6)
     KleinerGegner = (auto(), 3, -5, 8)
-
 
     def __init__(self, id, hp_gw: int, zk_gw: int, gs_gw: int):
         self.id = id

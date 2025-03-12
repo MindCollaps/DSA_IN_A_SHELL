@@ -1,7 +1,8 @@
-from enum import Enum
 import random
-from item.Rarity import Rarity
+from enum import Enum
+
 from game.Random import getRandomItems, getRandomEnemy, get_random_rarity
+
 
 class RoomType(Enum):
     EMPTY = 0
@@ -9,6 +10,7 @@ class RoomType(Enum):
     ITEM = 2
     BOSS = 3
     SHOP = 4
+
 
 class Room:
     def __init__(self, dungeon):
@@ -19,6 +21,7 @@ class Room:
         self.dungeon = dungeon
         self.Room_Type: RoomType = RoomType.EMPTY
         self.generate_room()
+        self.visited = False
 
     def generate_room(self):
         room_type_probabilities = {

@@ -1,6 +1,7 @@
 from item.Item import Item
-from item.usable.Usable import Usable, EffectType
 from item.Rarity import Rarity
+from item.usable.Usable import Usable, EffectType
+
 
 class Curry(Item, Usable):
     def __init__(self, name="Curry", description="Aromatic curry", price=9, rarity=Rarity.COMMON, heal_amount=5):

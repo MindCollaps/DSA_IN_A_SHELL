@@ -1,10 +1,11 @@
 import random
-from game.Character import Spezies
+
 from game import Player
+from game.Character import Spezies
 from item import Item
+from item.weapon.Fist import Fist
 from npc.DroppingNpc import DroppingNpc
 from npc.Enemy import Enemy
-from item.weapon.Fist import Fist
 
 
 class ZombieChicken(Enemy, DroppingNpc):

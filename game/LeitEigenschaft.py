@@ -1,5 +1,6 @@
 from enum import Enum, auto
 
+
 class LeitEigenschaft(Enum):
     MU = auto()
     KL = auto()
@@ -26,6 +27,7 @@ class LeitEigenschaft(Enum):
 
 def get_leiteigenschaft(player, leiteigenschaft: LeitEigenschaft) -> int:
     return next(wert for le, wert in player.leit_eigenschaft if le == leiteigenschaft)
+
 
 def set_leiteigenschaft(player, leiteigenschaft: LeitEigenschaft, value: int):
     for idx, (le, _) in enumerate(player.leit_eigenschaft):

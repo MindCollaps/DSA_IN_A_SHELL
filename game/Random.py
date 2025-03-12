@@ -1,13 +1,21 @@
 import random
 from typing import List
-from item.Rarity import Rarity
-from item.Item import Item
-from npc.Enemy import Enemy
 
-# --- Waffen ---
-from item.weapon.BasicSword import BasicSword
+from item.Item import Item
+from item.Rarity import Rarity
+from item.usable.Beer import Beer
+from item.usable.Bottle import Bottle
+from item.usable.Curry import Curry
+from item.usable.GoldenApple import GoldenApple
+# --- Items & Usables ---
+from item.usable.HealthPotion import HealthPotion
+from item.usable.ShinyBottle import ShinyBottle
+from item.usable.Stick import Stick
+from item.usable.StrengthPotion import StrengthPotion
 from item.weapon.BasicBow import BasicBow
 from item.weapon.BasicDagger import BasicDagger
+# --- Waffen ---
+from item.weapon.BasicSword import BasicSword
 from item.weapon.EpicBow import EpicBow
 from item.weapon.EpicKatana import EpicKatana
 from item.weapon.LegendarySword import LegendarySword
@@ -19,7 +27,7 @@ from item.weapon.Shovel import Shovel
 from item.weapon.SoapSock import SoapSock
 from item.weapon.Stones import Stones
 from item.weapon.Warhammer import Warhammer
-
+from npc.Enemy import Enemy
 # --- Monster ---
 from npc.monster.Bat import Bat
 from npc.monster.FreddyBear import FreddyBear
@@ -34,30 +42,18 @@ from npc.monster.Slime import Slime
 from npc.monster.Turtles import Turtles
 from npc.monster.ZombieChicken import ZombieChicken
 
-# --- Items & Usables ---
-from item.usable.HealthPotion import HealthPotion
-from item.usable.StrengthPotion import StrengthPotion
-from item.usable.Stick import Stick
-from item.usable.Beer import Beer
-from item.usable.Bottle import Bottle
-from item.usable.Curry import Curry
-from item.usable.Fruit import Fruit
-from item.usable.GoldenApple import GoldenApple
-from item.usable.HotCurry import HotCurry
-from item.usable.Jar import Jar
-from item.usable.Mask import Mask
-from item.usable.ShinyBottle import ShinyBottle
-from item.usable.Stone import Stone
 
 class ItemPossibility:
     def __init__(self, item: Item, rarity: Rarity):
         self.item = item
         self.rarity = rarity
 
+
 class MonsterPossibility:
     def __init__(self, monster: Enemy, rarity: Rarity):
         self.monster = monster
         self.rarity = rarity
+
 
 # --- Vollständige Items ---
 items = [
@@ -196,13 +192,16 @@ monsters = [
     MonsterPossibility(ZombieChicken(), Rarity.COMMON)
 ]
 
+
 def getRandomItems(rarity: Rarity, amount: int) -> List[Item]:
     items_of_rarity = [ip.item for ip in items if ip.rarity == rarity]
     return random.choices(items_of_rarity, k=amount) if items_of_rarity else []
 
+
 def getRandomEnemy(rarity: Rarity) -> Enemy:
     enemies_of_rarity = [mp.monster for mp in monsters if mp.rarity == rarity]
     return random.choice(enemies_of_rarity) if enemies_of_rarity else Bat()  # Fallback
+
 
 def get_random_rarity():
     return random.choices(

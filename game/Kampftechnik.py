@@ -1,5 +1,7 @@
 from enum import Enum
+
 from game.LeitEigenschaft import LeitEigenschaft
+
 
 class Kampftechnik(Enum):
     # Korrekte Referenzierung der LeitEigenschaft-Enum-Member

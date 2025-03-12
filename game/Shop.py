@@ -1,7 +1,11 @@
-from utils.ConsolePrinter import Printer, MenuOption
-from game.Random import items, weapons
 import random
+
+from rich.color import Color
+from rich.style import Style
+
+from game.Random import items, weapons
 from item.weapon.Fist import Fist  # Für die Fist-Überprüfung
+from utils.ConsolePrinter import Printer, MenuOption
 
 
 class Shop:
@@ -23,7 +27,8 @@ class Shop:
                 MenuOption("Verlassen")
             ]
 
-            choice, _ = self.printer.menu(main_options)
+            choice, _ = self.printer.menu(main_options, title="Shop",
+                                          border_style=Style(color=Color.from_rgb(252, 169, 3)))
 
             if choice == 0:
                 self.show_buy_menu()

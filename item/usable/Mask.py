@@ -1,9 +1,11 @@
 from item.Item import Item
-from item.usable.Usable import Usable, EffectType
 from item.Rarity import Rarity
+from item.usable.Usable import Usable, EffectType
+
 
 class Mask(Item, Usable):
-    def __init__(self, name="Kanekis Mask", description="Black mask covering half the face", price=20, rarity=Rarity.RARE, strength_amount=15):
+    def __init__(self, name="Kanekis Mask", description="Black mask covering half the face", price=20,
+                 rarity=Rarity.RARE, strength_amount=15):
         super().__init__(name, description, price, rarity)
         self.strength_amount = strength_amount
 
